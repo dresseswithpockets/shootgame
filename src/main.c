@@ -1,6 +1,3 @@
-
-#include <stdbool.h>
-
 #include "entity.h"
 #include "game.h"
 
@@ -17,7 +14,12 @@ void add_rolling_frame_time(double frame_time) {
     SetWindowTitle(TextFormat("fps: %lf", rolling_average));
 }
 
+// gross, i know, but it works and this is the only place im gunna be doing this funny interweaved platform ifdef
+#ifdef SG_USE_WINMAIN
+int WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow) {
+#else
 int main(void) {
+#endif
     SetTraceLogLevel(LOG_DEBUG);
 
     SetConfigFlags(FLAG_VSYNC_HINT);
