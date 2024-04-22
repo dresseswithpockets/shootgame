@@ -1,5 +1,4 @@
-#include <raylib.h>
-#include <math.h>
+
 #include <stdbool.h>
 
 #include "entity.h"

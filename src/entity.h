@@ -1,8 +1,9 @@
 #pragma once
 
-#include <raylib.h>
-#include <math.h>
+// forward decl needed for set_pixel_pos
+float fmodf(float x, float y);
 
+// game.h forward decls
 typedef struct GameData GameData;
 typedef struct GameState GameState;
 

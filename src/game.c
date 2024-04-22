@@ -1,5 +1,4 @@
 #include "entity.h"
-#include "math.h"
 #include "game.h"
 
 void integrate_state(GameState* state) {
@@ -46,7 +45,7 @@ void interpolate_entity(Entity* entity, Entity* next, double alpha) {
 
     // for our interpolated/rendered state, only thing we care about for now is interpolating
     // positions
-    set_pixel_pos(entity, lerp_vec(previous_pos, get_pixel_pos(next), alpha));
+    set_pixel_pos(entity, Vector2Lerp(previous_pos, get_pixel_pos(next), alpha));
 }
 
 void interpolate_state(GameState* previous, GameState* current, double alpha) {
