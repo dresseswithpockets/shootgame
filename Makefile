@@ -2,10 +2,20 @@ ifndef BUILD_DEBUG
 	BUILD_DEBUG=1
 endif
 
-ifeq ($(OS),Windows_NT)
-	BINEXT := .exe
-	LIBS=-lraylib -lwinmm -lgdi32 -static
-	LDIR=lib/windows
+CFLAGS=-Wall -Werror
+
+ifdef BUILD_WEB
+	BINEXT := .html
+	LIBS=-lraylib
+	CFLAGS+=-Llib/webassembly -s USE_GLFW=3 -s ASYNCIFY --shell-file src/shell.html --preload-file assets -s TOTAL_STACK=64MB -s INITIAL_MEMORY=128MB -s ASSERTIONS -DPLATFORM_WEB
+	CC=emcc
+else
+	ifeq ($(OS),Windows_NT)
+		BINEXT := .exe
+		LIBS=-lraylib -lwinmm -lgdi32 -static
+		CFLAGS+=-Llib/windows
+	endif
+	CC=gcc
 endif
 
 OUTDIR=bin
@@ -19,13 +29,16 @@ PUBDIR=publish
 PUBBIN=$(PUBDIR)/game$(BINEXT)
 ASSETDIR=assets
 
-CC=gcc
-CFLAGS=-I$(IDIR) -L$(LDIR) -Wall -Werror
+CFLAGS+=-I$(IDIR)
 # separated out linker flags, since these shouldnt be used when compiling the PCH
 LFLAGS=$(_EMPTY_)
 
 ifeq ($(BUILD_RELEASE),1)
-	CFLAGS+=-O2
+	ifdef BUILD_WEB
+		CFLAGS+=-Os
+	else
+		CFLAGS+=-O2
+	endif
 endif
 
 ifeq ($(BUILD_DEBUG),1)
