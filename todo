@@ -1,0 +1,4 @@
+# devex
+TODO in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
+TODO in-game quake-style developer console
+TODO in-game developer menu for setting dungeon parameters, room parameters, entity parameters, altering the shape of the dungeon, placing/deleting entities, etc. dev menu should pause the update loop by default, and allow the user to "step" the update loop
