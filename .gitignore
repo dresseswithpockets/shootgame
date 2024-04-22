@@ -1,5 +1,7 @@
-bin/
-obj/*.o
+bin/*
+!bin/.gitkeep
+obj/*
+!bin/.gitkeep
 *.gch
 
 .vscode/
