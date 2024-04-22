@@ -3,11 +3,14 @@ ifndef BUILD_DEBUG
 endif
 
 CFLAGS=-Wall -Werror
+# separated out linker flags, since these shouldnt be used when compiling the PCH
+LFLAGS=$(_EMPTY_)
 
 ifdef BUILD_WEB
 	BINEXT := .html
 	LIBS=-lraylib
-	CFLAGS+=-Llib/webassembly -s USE_GLFW=3 -s ASYNCIFY --shell-file src/shell.html --preload-file assets -s TOTAL_STACK=64MB -s INITIAL_MEMORY=128MB -s ASSERTIONS -DPLATFORM_WEB
+	CFLAGS+=-s USE_GLFW=3 -s ASYNCIFY --shell-file src/shell.html --preload-file assets -s TOTAL_STACK=64MB -s INITIAL_MEMORY=128MB -s ASSERTIONS -DPLATFORM_WEB
+	LFLAGS=-Llib/webassembly
 	CC=emcc
 else
 	ifeq ($(OS),Windows_NT)
@@ -30,8 +33,6 @@ PUBBIN=$(PUBDIR)/game$(BINEXT)
 ASSETDIR=assets
 
 CFLAGS+=-I$(IDIR)
-# separated out linker flags, since these shouldnt be used when compiling the PCH
-LFLAGS=$(_EMPTY_)
 
 ifeq ($(BUILD_RELEASE),1)
 	ifdef BUILD_WEB
@@ -42,7 +43,10 @@ ifeq ($(BUILD_RELEASE),1)
 endif
 
 ifeq ($(BUILD_DEBUG),1)
-	CFLAGS+=-g -fsanitize=undefined -fsanitize-trap
+	CFLAGS+=-g
+	ifeq ($(OS),Windows_NT)
+		CFLAGS+=-fsanitize=undefined -fsanitize-trap
+	endif
 else
 	ifeq ($(OS),Windows_NT)
 		CFLAGS+=-DSG_USE_WINMAIN
