@@ -1,7 +1,12 @@
+# game
+DONE add entity-room collision
+TODO add entity-entity collision & flagged pushing
+TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
+
 # devex
-TODO in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
-TODO in-game quake-style developer console
-TODO in-game developer menu for setting dungeon parameters, room parameters, entity parameters, altering the shape of the dungeon, placing/deleting entities, etc. dev menu should pause the update loop by default, and allow the user to "step" the update loop
+TODO add in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
+TODO add in-game quake-style developer console
+TODO add in-game developer menu for setting dungeon parameters, room parameters, entity parameters, altering the shape of the dungeon, placing/deleting entities, etc. dev menu should pause the update loop by default, and allow the user to "step" the update loop
 TODO add support for compiling with emscripten/emcc for web
 TODO clean up main.c into platform-specific main.desktop.c and main.web.c
-TODO setup Unity testbed 
+TODO setup Unity for unit tests

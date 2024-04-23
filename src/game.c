@@ -1,27 +1,60 @@
 #include "entity.h"
 #include "game.h"
 
-void integrate_state(GameState* state) {
-    int in_x = 0, in_y = 0;
-    if (IsKeyDown(KEY_A))
-        in_x -= 1;
-    if (IsKeyDown(KEY_D))
-        in_x += 1;
-    if (IsKeyDown(KEY_W))
-        in_y -= 1;
-    if (IsKeyDown(KEY_S))
-        in_y += 1;
-
-    if (in_x != 0 || in_y != 0) {
-        float mag = sqrtf(in_x * in_x + in_y * in_y);
-        state->player.velocity.x = 8 * in_x/mag;
-        state->player.velocity.y = 8 * in_y/mag;
-    } else {
-        state->player.velocity.x = 0;
-        state->player.velocity.y = 0;
+void update_key_state(KeyState* key_state) {
+    bool new_key_down = IsKeyDown(key_state->key);
+    if (new_key_down != key_state->is_down) {
+        key_state->this_frame = true;
+        key_state->counter = 0;
+    }
+    else {
+        key_state->this_frame = false;
+        key_state->counter += 1;
     }
 
+    key_state->is_down = new_key_down;
+}
+
+void update_input_state(GameData* game_data) {
+    update_key_state(&game_data->input_state.move_up);
+    update_key_state(&game_data->input_state.move_down);
+    update_key_state(&game_data->input_state.move_left);
+    update_key_state(&game_data->input_state.move_right);
+
+    update_key_state(&game_data->input_state.shoot_up);
+    update_key_state(&game_data->input_state.shoot_down);
+    update_key_state(&game_data->input_state.shoot_left);
+    update_key_state(&game_data->input_state.shoot_right);
+}
+
+void integrate_player(GameState* state) {
+    const GameData* game_data = state->game_data;
+
+    int in_x = 0, in_y = 0;
+    if (game_data->input_state.move_left.is_down) in_x -= 1;
+    if (game_data->input_state.move_right.is_down) in_x += 1;
+    if (game_data->input_state.move_up.is_down) in_y -= 1;
+    if (game_data->input_state.move_down.is_down) in_y += 1;
+
+    Vector2 wish_dir = (Vector2){ 0.0, 0.0 };
+    if (in_x != 0 || in_y != 0) {
+        float mag = sqrtf(in_x * in_x + in_y * in_y);
+        wish_dir = (Vector2){ in_x / mag, in_y / mag };
+    }
+
+    // NOTE(snale): honestly im not sure if this approach feels good, and using accelleration and
+    //              friction might not be good for the bullet hell parts of the game. guess we'll
+    //              see from playtesting.
+    Vector2 wish_accel = Vector2Scale(wish_dir, state->game_data->dt * state->player.normal_max_speed / state->player.normal_accel_time);
+    state->player.velocity = Vector2Add(state->player.velocity, wish_accel);
+    float max_speed_sqr = state->player.normal_max_speed * state->player.normal_max_speed;
+    if (Vector2LengthSqr(state->player.velocity) >= max_speed_sqr)
+        state->player.velocity = Vector2Scale(Vector2Normalize(state->player.velocity), state->player.normal_max_speed);
+
     // fix cobblestoning
+    // TODO: this still seems broken - there is a stutter, though it might be caused by friction?
+    //       it might actually be because we aren't storing a subpixel position, only a subcell position
+    //       that we truncate
     if (!state->previously_moving_diag && in_x != 0 && in_y != 0) {
         Vector2 pixel_pos = get_pixel_pos(&state->player);
         pixel_pos.x = floorf(pixel_pos.x) + 0.5;
@@ -30,7 +63,10 @@ void integrate_state(GameState* state) {
     }
 
     state->previously_moving_diag = in_x != 0 && in_y != 0;
+}
 
+void integrate_state(GameState* state) {
+    integrate_player(state);
     ent_move(state, &state->player);
 }
 

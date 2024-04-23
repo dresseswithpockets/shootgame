@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "game.h"
+#include "math.h"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
@@ -51,6 +52,18 @@ int main(void) {
         .render_target = LoadRenderTexture(render_width, render_height),
         .target_dest = { 0, 0, render_width * scale, render_height * scale },
 
+        .input_state = (InputState) {
+            .move_left = (KeyState){ KEY_A, 0, false, false },
+            .move_right = (KeyState){ KEY_D, 0, false, false },
+            .move_up = (KeyState){ KEY_W, 0, false, false },
+            .move_down = (KeyState){ KEY_S, 0, false, false },
+
+            .shoot_left = (KeyState){ KEY_LEFT, 0, false, false },
+            .shoot_right = (KeyState){ KEY_RIGHT, 0, false, false },
+            .shoot_up = (KeyState){ KEY_UP, 0, false, false },
+            .shoot_down = (KeyState){ KEY_DOWN, 0, false, false },
+        },
+
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
 
@@ -67,7 +80,12 @@ int main(void) {
     // setup some initial test data
     *game_data.current_state = (GameState){0};
     game_data.current_state->game_data = &game_data;
-    game_data.current_state->player.cpos = (Vector2){ 3, 3 };
+    game_data.current_state->player = (Entity) {
+        .cpos = (Vector2i){ 3, 3 },
+        .normal_friction = 0.85,
+        .normal_accel_time = 0.02, // 1 ticks
+        .normal_max_speed = 8.0,
+    };
     *game_data.previous_state = *game_data.current_state;
 
 #if defined(PLATFORM_WEB)
@@ -105,6 +123,7 @@ void integrate_render_frame(void* user_data) {
 
     frame_accumulator += frame_time;
     while (frame_accumulator >= game_data->dt) {
+        update_input_state(game_data);
         // TODO: get all input up front and set input state in GameData
         *game_data->previous_state = *game_data->current_state;
         integrate_state(game_data->current_state);

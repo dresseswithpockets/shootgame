@@ -1,7 +1,6 @@
 #pragma once
 
-// forward decl needed for set_pixel_pos
-float fmodf(float x, float y);
+#include "math.h"
 
 // game.h forward decls
 typedef struct GameData GameData;
@@ -11,14 +10,21 @@ typedef struct GameState GameState;
 
 typedef struct Entity {
     // position on tile grid
-    Vector2 cpos;
+    Vector2i cpos;
     // fraction from 0 to 1 representing sub-grid position
     Vector2 fpos;
 
     // velocity in cells per second
     Vector2 velocity;
+    // friction multiplier applied to velocity every frame, after velocity is applied to position
+    float normal_friction;
+    // amount of time it should take to reach normal_max_speed - used to calculate per-frame
+    // acceleration
+    float normal_accel_time;
+    // max running speed, entities will accelerate up to this speed
+    float normal_max_speed;
 
-    // AABB collision info used for collisions with tiles
+    // AABB collision info used for collisions with tiles, units are in cells
     Rectangle c_aabb;
     // Radius collision info used for character pushing and bullet intersections
     Vector2 c_radial_center;
