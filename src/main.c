@@ -37,11 +37,6 @@ int main(void) {
 
     InitWindow(1280, 720, "bwuh");
 
-#if !defined(PLATFORM_WEB)
-    // just in case vsync doesnt work, we'll set the target FPS to the current monitor's refresh rate + 1
-    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
-#endif
-
     Assets game_assets = {
         .sheet = LoadTexture("assets/sheet.png"),
         .sheet_wall = {0, 8, 8, 8},
@@ -81,6 +76,9 @@ int main(void) {
     // timestemp, this should produce identical gameplay as the "real" loop.
     emscripten_set_main_loop_arg(integrate_render_frame, &game_data, 0, 1);
 #else
+    // just in case vsync doesnt work, we'll set the target FPS to the current monitor's refresh rate + 1
+    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
+
     while (!WindowShouldClose())
         integrate_render_frame(&game_data);
 #endif
