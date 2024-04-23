@@ -1,3 +1,5 @@
+#pragma once
+
 // forward decl to avoid including stdlib math.h
 float fmodf(float x, float y);
 
