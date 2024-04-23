@@ -2,23 +2,19 @@ ifndef BUILD_DEBUG
 	BUILD_DEBUG=1
 endif
 
-CFLAGS=-Wall -Werror
+CC=gcc
+CFLAGS=-Wall -Werror -DPLATFORM_DEKSTOP
 # separated out linker flags, since these shouldnt be used when compiling the PCH
 LFLAGS=$(_EMPTY_)
 
-ifdef BUILD_WEB
-	BINEXT := .html
-	LIBS=-lraylib
-	CFLAGS+=-s USE_GLFW=3 -s ASYNCIFY --shell-file src/shell.html --preload-file assets -s TOTAL_STACK=64MB -s INITIAL_MEMORY=128MB -s ASSERTIONS -DPLATFORM_WEB
-	LFLAGS=-Llib/webassembly
-	CC=emcc
+ifeq ($(OS),Windows_NT)
+	BINEXT := .exe
+	LIBS=-lraylib -lwinmm -lgdi32 -static
+	CFLAGS+=-Llib/windows
 else
-	ifeq ($(OS),Windows_NT)
-		BINEXT := .exe
-		LIBS=-lraylib -lwinmm -lgdi32 -static
-		CFLAGS+=-Llib/windows
-	endif
-	CC=gcc
+	BINEXT := .x86_64
+	LIBS=-lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+	CFLAGS+=-Llib/linux
 endif
 
 OUTDIR=bin
@@ -43,10 +39,7 @@ ifeq ($(BUILD_RELEASE),1)
 endif
 
 ifeq ($(BUILD_DEBUG),1)
-	CFLAGS+=-g
-	ifeq ($(OS),Windows_NT)
-		CFLAGS+=-fsanitize=undefined -fsanitize-trap
-	endif
+	CFLAGS+=-g -fsanitize=undefined -fsanitize-trap
 else
 	ifeq ($(OS),Windows_NT)
 		CFLAGS+=-DSG_USE_WINMAIN

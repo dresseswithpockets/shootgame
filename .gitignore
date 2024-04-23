@@ -3,6 +3,7 @@ bin/*
 obj/*
 !bin/.gitkeep
 *.gch
+*.pch
 
 .vscode/
 *.code-workspace
