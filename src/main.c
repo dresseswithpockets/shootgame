@@ -26,7 +26,9 @@ int main(void) {
     InitWindow(1280, 720, "bwuh");
 
     // just in case vsync doesnt work, we'll set the target FPS to the current monitor's refresh rate + 1
-    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()) + 1);
+    int refresh_rate = GetMonitorRefreshRate(GetCurrentMonitor());
+    if (refresh_rate == 0) refresh_rate = 60;
+    SetTargetFPS(refresh_rate);
 
     Assets game_assets = {
         .sheet = LoadTexture("assets/sheet.png"),
