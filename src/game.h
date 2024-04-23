@@ -9,21 +9,29 @@ typedef struct Assets {
     Rectangle sheet_player;
 } Assets;
 
-typedef struct GameData {
-    RenderTexture2D render_target;
+typedef struct GameState GameState;
+typedef struct GameData GameData;
+
+struct GameData {
     Assets* assets;
+    RenderTexture2D render_target;
+    Rectangle target_dest;
+
+    GameState* previous_state;
+    GameState* current_state;
 
     bool debug;
     double t;
     double dt;
-} GameData;
+    double current_time;
+};
 
-typedef struct GameState {
+struct GameState {
     GameData* game_data;
 
     Entity player;
     bool previously_moving_diag;
-} GameState;
+};
 
 void integrate_state(GameState* state);
 void interpolate_state(GameState* previous, GameState* current, double alpha);
