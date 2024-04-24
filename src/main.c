@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "game.h"
 #include "math.h"
+#include "input.h"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
@@ -45,44 +46,12 @@ int main(void) {
         .sheet_player = {72, 0, 16, 16},
     };
 
-    struct VirtualAxisNode test_node = {
-        .node_kind = 0,
-        .keys = {
-            .negative = KEY_A,
-            .positive = KEY_D,
-        }
-    };
-
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
     int scale = (int)(GetRenderHeight() / (float)render_height);
     GameData game_data = {
         .assets = &game_assets,
         .render_target = LoadRenderTexture(render_width, render_height),
         .target_dest = { 0, 0, render_width * scale, render_height * scale },
-
-        .input_state = (InputState) {
-            .move_horizontal = (VirtualAxis) {
-                .node_count = 1,
-                .nodes = &test_node, // TODO: add a way to dynamically add/remove nodes... maybe we just have an array of a static-size and a "null" node_kind, avoids those pesky mallocs
-                .value = 0.0,
-            },
-            .move_vertical = (VirtualAxis) {
-                .node_count = 0,
-                .nodes = nullptr,
-                .value = 0.0,
-            },
-
-            .shoot_horizontal = (VirtualAxis) {
-                .node_count = 0,
-                .nodes = nullptr,
-                .value = 0.0,
-            },
-            .shoot_vertical = (VirtualAxis) {
-                .node_count = 0,
-                .nodes = nullptr,
-                .value = 0.0,
-            },
-        },
 
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
@@ -93,7 +62,15 @@ int main(void) {
         .current_time = GetTime(),
     };
 
-    // center the renter texture on the screen
+    game_data.input_state = (InputState) {0};
+
+    // setup default inputs
+    virtual_axis_add_keys(&game_data.input_state.move_horizontal, KEY_A, KEY_D);
+    virtual_axis_add_keys(&game_data.input_state.move_vertical, KEY_W, KEY_S);
+    virtual_axis_add_keys(&game_data.input_state.shoot_horizontal, KEY_LEFT, KEY_RIGHT);
+    virtual_axis_add_keys(&game_data.input_state.shoot_vertical, KEY_UP, KEY_DOWN);
+
+    // center the render texture on the screen
     game_data.target_dest.x = (GetRenderWidth() - game_data.target_dest.width) / 2;
     game_data.target_dest.y = (GetRenderHeight() - game_data.target_dest.height) / 2;
 
