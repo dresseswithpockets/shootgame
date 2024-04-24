@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "game.h"
 #include "input.h"
+#include "math.h"
 
 void update_input_state(GameData* game_data) {
     virtual_axis_update(&game_data->input_state.move_horizontal);
@@ -81,6 +82,12 @@ void interpolate_entity(Entity* entity, Entity* next, double alpha) {
 
 void interpolate_state(GameState* previous, GameState* current, double alpha) {
     interpolate_entity(&previous->player, &current->player, alpha);
+
+    // assuming that previous and current have the same number of entities
+    // TODO: this will be address with generational handles
+    for (int i = 0; i < ARRAY_LEN(previous->boxes); i++) {
+        interpolate_entity(&previous->boxes[i], &current->boxes[i], alpha);
+    }
 }
 
 void render_state(GameState* state) {
