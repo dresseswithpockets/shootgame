@@ -29,12 +29,13 @@ typedef struct Entity {
     // Radius collision info used for character pushing and bullet intersections
     Vector2 c_radial_center;
     float c_radius;
+    bool c_pushes;
 
     int health;
     int max_health;
 } Entity;
 
-static inline Vector2 get_pixel_pos(Entity* entity) {
+static inline Vector2 get_pixel_pos(const Entity* entity) {
     Vector2 pos = {
         (entity->cpos.x + entity->fpos.x) * CELL_SIZE,
         (entity->cpos.y + entity->fpos.y) * CELL_SIZE
@@ -50,4 +51,6 @@ static inline void set_pixel_pos(Entity* entity, Vector2 pos) {
 }
 
 void draw_player(GameState* state);
+void draw_box(GameState* state); // NOTE: test function
 void ent_move(GameState* state, Entity* entity);
+void ent_repel_ent(Entity* self, Entity* other);

@@ -67,6 +67,22 @@ void integrate_player(GameState* state) {
 
 void integrate_state(GameState* state) {
     integrate_player(state);
+    // example entity pushing
+    for (int i = 0; i < ARRAY_LEN(state->boxes); i++) {
+        // repel player & boxes
+        ent_repel_ent(&state->player, &state->boxes[i]);
+        // repel boxes & boxes
+        for (int j = 0; j < ARRAY_LEN(state->boxes); j++) {
+            if (i == j) continue;
+            ent_repel_ent(&state->boxes[i], &state->boxes[j]);
+        }
+    }
+
+    // move boxes
+    for (int i = 0; i < ARRAY_LEN(state->boxes); i++) {
+        ent_move(state, &state->boxes[i]);
+    }
+
     ent_move(state, &state->player);
 }
 
@@ -92,6 +108,7 @@ void render_state(GameState* state) {
     ClearBackground(BLACK);
     draw_room(state);
     draw_player(state);
+    draw_box(state);
 }
 
 void draw_sheet_sprite(Texture2D sheet, Rectangle source, Vector2 pos) {

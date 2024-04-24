@@ -85,7 +85,20 @@ int main(void) {
         .normal_friction = 0.85,
         .normal_accel_time = 0.02, // 1 ticks
         .normal_max_speed = 8.0,
+
+        .c_radius = 6,
+        .c_pushes = true,
     };
+    for (int i = 0; i < ARRAY_LEN(game_data.current_state->boxes); i++) {
+        game_data.current_state->boxes[i] = (Entity) {
+            .cpos = (Vector2i) { GetRandomValue(5, 14), GetRandomValue(5, 14) },
+            .fpos = (Vector2) { rand_float(0.0, 1.0), rand_float(0.0, 1.0) },
+            .normal_friction = 0.96,
+
+            .c_radius = 4,
+            .c_pushes = true,
+        };
+    }
     *game_data.previous_state = *game_data.current_state;
 
 #if defined(PLATFORM_WEB)
