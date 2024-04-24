@@ -45,6 +45,14 @@ int main(void) {
         .sheet_player = {72, 0, 16, 16},
     };
 
+    struct VirtualAxisNode test_node = {
+        .node_kind = 0,
+        .keys = {
+            .negative = KEY_A,
+            .positive = KEY_D,
+        }
+    };
+
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
     int scale = (int)(GetRenderHeight() / (float)render_height);
     GameData game_data = {
@@ -53,15 +61,27 @@ int main(void) {
         .target_dest = { 0, 0, render_width * scale, render_height * scale },
 
         .input_state = (InputState) {
-            .move_left = (KeyState){ KEY_A, 0, false, false },
-            .move_right = (KeyState){ KEY_D, 0, false, false },
-            .move_up = (KeyState){ KEY_W, 0, false, false },
-            .move_down = (KeyState){ KEY_S, 0, false, false },
+            .move_horizontal = (VirtualAxis) {
+                .node_count = 1,
+                .nodes = &test_node, // TODO: add a way to dynamically add/remove nodes... maybe we just have an array of a static-size and a "null" node_kind, avoids those pesky mallocs
+                .value = 0.0,
+            },
+            .move_vertical = (VirtualAxis) {
+                .node_count = 0,
+                .nodes = nullptr,
+                .value = 0.0,
+            },
 
-            .shoot_left = (KeyState){ KEY_LEFT, 0, false, false },
-            .shoot_right = (KeyState){ KEY_RIGHT, 0, false, false },
-            .shoot_up = (KeyState){ KEY_UP, 0, false, false },
-            .shoot_down = (KeyState){ KEY_DOWN, 0, false, false },
+            .shoot_horizontal = (VirtualAxis) {
+                .node_count = 0,
+                .nodes = nullptr,
+                .value = 0.0,
+            },
+            .shoot_vertical = (VirtualAxis) {
+                .node_count = 0,
+                .nodes = nullptr,
+                .value = 0.0,
+            },
         },
 
         .previous_state = MemAlloc(sizeof(GameState)),

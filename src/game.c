@@ -1,40 +1,19 @@
 #include "entity.h"
 #include "game.h"
-
-void update_key_state(KeyState* key_state) {
-    bool new_key_down = IsKeyDown(key_state->key);
-    if (new_key_down != key_state->is_down) {
-        key_state->this_frame = true;
-        key_state->counter = 0;
-    }
-    else {
-        key_state->this_frame = false;
-        key_state->counter += 1;
-    }
-
-    key_state->is_down = new_key_down;
-}
+#include "input.h"
 
 void update_input_state(GameData* game_data) {
-    update_key_state(&game_data->input_state.move_up);
-    update_key_state(&game_data->input_state.move_down);
-    update_key_state(&game_data->input_state.move_left);
-    update_key_state(&game_data->input_state.move_right);
-
-    update_key_state(&game_data->input_state.shoot_up);
-    update_key_state(&game_data->input_state.shoot_down);
-    update_key_state(&game_data->input_state.shoot_left);
-    update_key_state(&game_data->input_state.shoot_right);
+    virtual_axis_update(&game_data->input_state.move_horizontal);
+    virtual_axis_update(&game_data->input_state.move_vertical);
+    virtual_axis_update(&game_data->input_state.shoot_horizontal);
+    virtual_axis_update(&game_data->input_state.shoot_vertical);
 }
 
 void integrate_player(GameState* state) {
     const GameData* game_data = state->game_data;
 
-    int in_x = 0, in_y = 0;
-    if (game_data->input_state.move_left.is_down) in_x -= 1;
-    if (game_data->input_state.move_right.is_down) in_x += 1;
-    if (game_data->input_state.move_up.is_down) in_y -= 1;
-    if (game_data->input_state.move_down.is_down) in_y += 1;
+    int in_x = signi(game_data->input_state.move_horizontal.value);
+    int in_y = signi(game_data->input_state.move_vertical.value);
 
     Vector2 wish_dir = (Vector2){ 0.0, 0.0 };
     if (in_x != 0 || in_y != 0) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "input.h"
 
 typedef struct Assets {
     Texture2D sheet;
@@ -12,27 +13,12 @@ typedef struct Assets {
 typedef struct GameState GameState;
 typedef struct GameData GameData;
 
-typedef struct KeyState {
-    // key to check
-    KeyboardKey key;
-    // number of frames that this key has been in its current state. starts at 0, meaning current frame
-    int counter;
-    // true if counter == 0; that is, if this is the first frame that is_down has been true or false.
-    bool this_frame;
-    // whether or not the key is currently pressed down
-    bool is_down;
-} KeyState;
-
 typedef struct InputState {
-    KeyState move_up;
-    KeyState move_down;
-    KeyState move_left;
-    KeyState move_right;
+    VirtualAxis move_horizontal;
+    VirtualAxis move_vertical;
 
-    KeyState shoot_up;
-    KeyState shoot_down;
-    KeyState shoot_left;
-    KeyState shoot_right;
+    VirtualAxis shoot_horizontal;
+    VirtualAxis shoot_vertical;
 } InputState;
 
 struct GameData {

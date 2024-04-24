@@ -3,7 +3,7 @@ ifndef BUILD_DEBUG
 endif
 
 CC=gcc
-CFLAGS=-Wall -Werror -DPLATFORM_DEKSTOP
+CFLAGS=-std=c2x -Wall -Werror -DPLATFORM_DEKSTOP
 # separated out linker flags, since these shouldnt be used when compiling the PCH
 LFLAGS=$(_EMPTY_)
 
@@ -52,10 +52,10 @@ PCH_DEP = $(SRCDIR)/pch-src.h
 PCH_HEADERS = $(IDIR)/raylib.h $(IDIR)/raymath.h $(IDIR)/rlgl.h
 PCH_OUT = $(PCH_SRC).gch
 
-_SRC_HEADERS = entity.h game.h math.h
+_SRC_HEADERS = entity.h game.h math.h input.h
 SRC_HEADERS=$(SRCDIR)/entity.h $(SRCDIR)/game.h
 
-_OBJ = main.o game.o entity.o
+_OBJ = main.o game.o entity.o input.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # main output
