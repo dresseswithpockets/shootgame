@@ -53,7 +53,7 @@ PCH_HEADERS = $(IDIR)/raylib.h $(IDIR)/raymath.h $(IDIR)/rlgl.h
 PCH_OUT = $(PCH_SRC).gch
 
 _SRC_HEADERS = entity.h game.h math.h input.h
-SRC_HEADERS=$(SRCDIR)/entity.h $(SRCDIR)/game.h
+SRC_HEADERS=$(patsubst %,$(SRCDIR)/%,$(_SRC_HEADERS))
 
 _OBJ = main.o game.o entity.o input.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
