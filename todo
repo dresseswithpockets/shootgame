@@ -5,8 +5,8 @@ DONE use generational handles for integration and entity referencing
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
 
 # ux
-TODO refactor KeyState to allow for multiple keys mapped to a single action
-TODO refactor move_* and shoot_* actions to behave like virtual axes which can be backed by gamepad axes or button pairs
+DONE refactor KeyState to allow for multiple keys mapped to a single action
+DONE refactor move_* and shoot_* actions to behave like virtual axes which can be backed by gamepad axes or button pairs
 
 # devex
 TODO add in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
