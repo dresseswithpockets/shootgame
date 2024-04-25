@@ -47,26 +47,31 @@ void integrate_player(GameState* state) {
 
 void integrate_state(GameState* state) {
     integrate_player(state);
+
     // example entity pushing
-    for (int i = 0; i < ARRAY_LEN(state->boxes); i++) {
+    for (int i = 0; i < MAX_ENTITIES; i++) {
+        if (!state->boxes.data[i].occupied) continue;
+
         // repel player & boxes
-        ent_repel_ent(&state->player, &state->boxes[i]);
+        Entity* box = &state->boxes.data[i].entity;
+        ent_repel_ent(&state->player, box);
+
         // repel boxes & boxes
-        for (int j = 0; j < ARRAY_LEN(state->boxes); j++) {
-            if (i == j) continue;
-            ent_repel_ent(&state->boxes[i], &state->boxes[j]);
+        for (int j = 0; j < MAX_ENTITIES; j++) {
+            if (i == j || !state->boxes.data[j].occupied) continue;
+            ent_repel_ent(box, &state->boxes.data[j].entity);
         }
     }
 
-    // move boxes
-    for (int i = 0; i < ARRAY_LEN(state->boxes); i++) {
-        ent_move(state, &state->boxes[i]);
+    for (int i = 0; i < MAX_ENTITIES; i++) {
+        if (!state->boxes.data[i].occupied) continue;
+        ent_move(state, &state->boxes.data[i].entity);
     }
 
     ent_move(state, &state->player);
 }
 
-void interpolate_entity(Entity* entity, Entity* next, double alpha) {
+void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
     // we will interpolate the entity's position, but we'll copy everything over from current
     // to previous, to ensure we're otherwise rendering the most correct information to the
     // player, as early as possible
@@ -85,8 +90,13 @@ void interpolate_state(GameState* previous, GameState* current, double alpha) {
 
     // assuming that previous and current have the same number of entities
     // TODO: this will be address with generational handles
-    for (int i = 0; i < ARRAY_LEN(previous->boxes); i++) {
-        interpolate_entity(&previous->boxes[i], &current->boxes[i], alpha);
+    for (int i = 0; i < ARRAY_LEN(current->boxes.data); i++) {
+        if (!current->boxes.data[i].occupied) continue;
+        Entity* current_ent = &current->boxes.data[i].entity;
+        Entity* previous_ent = ent_array_get(&previous->boxes, current_ent->handle);
+        if (previous_ent) {
+            interpolate_entity(previous_ent, current_ent, alpha);
+        }
     }
 }
 

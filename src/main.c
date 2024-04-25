@@ -86,8 +86,9 @@ int main(void) {
         .c_radius = 6,
         .c_pushes = true,
     };
-    for (int i = 0; i < ARRAY_LEN(game_data.current_state->boxes); i++) {
-        game_data.current_state->boxes[i] = (Entity) {
+    ent_array_init(&game_data.current_state->boxes);
+    for (int i = 0; i < 32; i++) {
+        Entity new_box = {
             .cpos = (Vector2i) { GetRandomValue(5, 14), GetRandomValue(5, 14) },
             .fpos = (Vector2) { rand_float(0.0, 1.0), rand_float(0.0, 1.0) },
             .normal_friction = 0.96,
@@ -95,6 +96,7 @@ int main(void) {
             .c_radius = 4,
             .c_pushes = true,
         };
+        ent_array_insert(&game_data.current_state->boxes, new_box);
     }
     *game_data.previous_state = *game_data.current_state;
 

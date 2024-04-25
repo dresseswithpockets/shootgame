@@ -1,6 +1,7 @@
 # game
 DONE add entity-room collision
 DONE add entity-entity collision & flagged pushing
+DONE use generational handles for integration and entity referencing
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
 
 # ux

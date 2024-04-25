@@ -41,7 +41,7 @@ struct GameState {
     GameData* game_data;
 
     Entity player;
-    Entity boxes[64];
+    EntityArray boxes;
 
     bool previously_moving_diag;
 };

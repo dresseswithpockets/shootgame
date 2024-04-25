@@ -1,5 +1,60 @@
+#include <assert.h>
 #include "game.h"
 #include "entity.h"
+
+void ent_array_init(EntityArray* array) {
+    for (int i = 0; i < MAX_ENTITIES - 1; i++) {
+        array->data[i].next_free = i + 1;
+    }
+}
+
+// TODO: make EntityArray use my DynamicArray library
+Entity* ent_array_get(EntityArray* array, Handle handle) {
+    struct EntityArrayEntry entry = array->data[handle.index];
+
+    if (entry.occupied && entry.generation == handle.generation) {
+        return &array->data[handle.index].entity;
+    }
+
+    return 0; // TODO: nullptr?
+}
+
+Handle ent_array_insert_new(EntityArray* array) {
+    // TODO: insert a new zero'd out Entity and return its handle
+    return ent_array_insert(array, (Entity) {0});
+}
+
+Handle ent_array_insert(EntityArray* array, Entity value) {
+    struct EntityArrayEntry* entry = &array->data[array->free_head];
+    assert(!entry->occupied && "The entry at the free_head is occupied");
+    Handle handle = {
+        .generation = entry->generation,
+        .index = array->free_head,
+    };
+    array->free_head = entry->next_free;
+    entry->occupied = true;
+    value.handle = handle;
+    entry->entity = value;
+    return handle;
+}
+
+void ent_array_remove(EntityArray* array, Handle handle) {
+    // TODO: remove the Entity entry at handle and mark unoccupied/empty
+    struct EntityArrayEntry* entry = &array->data[handle.index];
+
+    if (entry->occupied) {
+        if (entry->generation != handle.generation) {
+            // caller trying to remove an older generation, do nothing
+            return;
+        }
+
+        entry->generation += 1;
+        entry->occupied = false;
+        array->free_head = handle.index;
+    }
+
+    // if entry->occupied is false, caller is trying to remove an already-removed key, do nothing
+}
 
 void draw_player(GameState* state) {
     Assets* game_assets = state->game_data->assets;
@@ -9,10 +64,11 @@ void draw_player(GameState* state) {
 }
 
 void draw_box(GameState* state) {
-    for (int i = 0; i < ARRAY_LEN(state->boxes); i++) {
-        Assets* game_assets = state->game_data->assets;
-        Entity* box = &state->boxes[i];
+    for (int i = 0; i < MAX_ENTITIES; i++) {
+        if (!state->boxes.data[i].occupied) continue;
+        Entity* box = &state->boxes.data[i].entity;
         Vector2 pos = get_pixel_pos(box);
+        Assets* game_assets = state->game_data->assets;
         draw_sheet_sprite(game_assets->sheet, (Rectangle) { 8, 0, 8, 8 }, pos);
     }
 }
