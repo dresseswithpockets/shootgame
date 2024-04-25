@@ -3,6 +3,15 @@ DONE add entity-room collision
 DONE add entity-entity collision & flagged pushing
 DONE use generational handles for integration and entity referencing
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
+TODO add game pausing & simple "PAUSED" overlay text
+TODO add interactable doors
+TODO add BoI-style floor plan generation (BFS branch)
+TODO add weapon/source/thingie
+TODO add sprite flipping to player based on direction of travel & shoot direction
+TODO add a basic linear bullet
+TODO add shooting to the player
+TODO add health & damage to the player
+TODO add death screen
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action
@@ -15,3 +24,5 @@ TODO add in-game developer menu for setting dungeon parameters, room parameters,
 TODO add support for compiling with emscripten/emcc for web
 TODO clean up main.c into platform-specific main.desktop.c and main.web.c
 TODO setup Unity for unit tests
+TODO notarget mode - disables NPCs from targetting the player
+TODO select entities in devmenu - visual entities can be selected by clicking on them, and that will highlight their attributes in the devmenu tree
