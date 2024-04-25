@@ -49,23 +49,18 @@ void integrate_state(GameState* state) {
     integrate_player(state);
 
     // example entity pushing
-    for (int i = 0; i < MAX_ENTITIES; i++) {
-        if (!state->boxes.data[i].occupied) continue;
-
-        // repel player & boxes
-        Entity* box = &state->boxes.data[i].entity;
+    ENT_ARRAY_FOREACH(state->boxes, box_entry_a) {
+        Entity* box = &box_entry_a->value;
         ent_repel_ent(&state->player, box);
 
-        // repel boxes & boxes
-        for (int j = 0; j < MAX_ENTITIES; j++) {
-            if (i == j || !state->boxes.data[j].occupied) continue;
-            ent_repel_ent(box, &state->boxes.data[j].entity);
+        ENT_ARRAY_FOREACH(state->boxes, box_entry_b) {
+            if (box_entry_a == box_entry_b) continue;
+            ent_repel_ent(box, &box_entry_b->value);
         }
     }
 
-    for (int i = 0; i < MAX_ENTITIES; i++) {
-        if (!state->boxes.data[i].occupied) continue;
-        ent_move(state, &state->boxes.data[i].entity);
+    ENT_ARRAY_FOREACH(state->boxes, box_entry) {
+        ent_move(state, &box_entry->value);
     }
 
     ent_move(state, &state->player);
@@ -88,11 +83,8 @@ void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
 void interpolate_state(GameState* previous, GameState* current, double alpha) {
     interpolate_entity(&previous->player, &current->player, alpha);
 
-    // assuming that previous and current have the same number of entities
-    // TODO: this will be address with generational handles
-    for (int i = 0; i < ARRAY_LEN(current->boxes.data); i++) {
-        if (!current->boxes.data[i].occupied) continue;
-        Entity* current_ent = &current->boxes.data[i].entity;
+    ENT_ARRAY_FOREACH(current->boxes, box_entry) {
+        Entity* current_ent = &box_entry->value;
         Entity* previous_ent = ent_array_get(&previous->boxes, current_ent->handle);
         if (previous_ent) {
             interpolate_entity(previous_ent, current_ent, alpha);
