@@ -13,7 +13,7 @@ typedef struct Vector2i {
 #define ARRAY_LEN(arr) (sizeof(arr)/sizeof(arr[0]))
 
 static inline float rand_float(float min, float max) {
-    return ((float)GetRandomValue(INT_MIN + 1, INT_MAX)/(float)(INT_MAX)) * (max - min) + min;
+    return ((float)GetRandomValue(0, INT_MAX)/(float)(INT_MAX)) * (max - min) + min;
 }
 
 static inline int signi(float x) {
