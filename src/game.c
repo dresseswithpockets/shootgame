@@ -35,11 +35,11 @@ void integrate_player(GameState* state) {
     // TODO: this still seems broken - there is a stutter, though it might be caused by friction?
     //       it might actually be because we aren't storing a subpixel position, only a subcell position
     //       that we truncate
-    if (!state->previously_moving_diag && in_x != 0 && in_y != 0) {
-        Vector2 pixel_pos = get_pixel_pos(&state->player);
-        pixel_pos.x = floorf(pixel_pos.x) + 0.5;
-        pixel_pos.y = floorf(pixel_pos.y) + 0.5;
-        set_pixel_pos(&state->player, pixel_pos);
+    if (in_x != 0 && in_y != 0) {
+        state->player.pos_subpixel.x = 0.5;
+        state->player.pos_subpixel.y = 0.5;
+        state->player.pos.x = floorf(state->player.pos.x) + 0.5;
+        state->player.pos.y = floorf(state->player.pos.y) + 0.5;
     }
 
     state->previously_moving_diag = in_x != 0 && in_y != 0;
@@ -70,14 +70,16 @@ void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
     // we will interpolate the entity's position, but we'll copy everything over from current
     // to previous, to ensure we're otherwise rendering the most correct information to the
     // player, as early as possible
-    Vector2 previous_pos = get_pixel_pos(entity);
+    Vector2i previous_pos_pixel = entity->pos_pixel;
+    Vector2 previous_pos = entity->pos;
 
     // N.B. this assumes that any pointers in Entity are shared, and produce idempodent integrations
     *entity = *next;
 
     // for our interpolated/rendered state, only thing we care about for now is interpolating
     // positions
-    set_pixel_pos(entity, Vector2Lerp(previous_pos, get_pixel_pos(next), alpha));
+    entity->pos_pixel = vector2i_lerp(previous_pos_pixel, next->pos_pixel, alpha);
+    entity->pos = Vector2Lerp(previous_pos, next->pos, alpha);
 }
 
 void interpolate_state(GameState* previous, GameState* current, double alpha) {
@@ -95,47 +97,35 @@ void interpolate_state(GameState* previous, GameState* current, double alpha) {
 void render_state(GameState* state) {
     ClearBackground(BLACK);
     draw_room(state);
-    draw_player(state);
-    draw_box(state);
-}
 
-void draw_sheet_sprite(Texture2D sheet, Rectangle source, Vector2 pos) {
-    DrawTexturePro(
-        sheet,
-        source,
-        (Rectangle){ pos.x, pos.y, source.width, source.height },
-        (Vector2){ source.width / 2.0f, source.height / 2.0f },
-        0.0f,
-        WHITE);
+    ENT_ARRAY_FOREACH(state->boxes, box_entry) {
+        draw_ent(&box_entry->value);
+        if (state->game_data->debug) {
+            draw_ent_debug(&box_entry->value);
+        }
+    }
+    draw_ent(&state->player);
+    if (state->game_data->debug) {
+        draw_ent_debug(&state->player);
+    }
+
+    DrawRectangleLines(0, 0, 128, 128, RED);
 }
 
 void draw_room(const GameState* state) {
     const GameData* game_data = state->game_data;
     for (int i = 0; i < 16; i++) {
         // top wall
-        draw_sheet_sprite(
-            game_data->assets->sheet,
-            game_data->assets->sheet_wall,
-            (Vector2){ i*8+4, 4 });
-
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 0 }, 0.0, WHITE);
         // bottom wall
-        draw_sheet_sprite(
-            game_data->assets->sheet,
-            game_data->assets->sheet_wall,
-            (Vector2){ i*8+4, 124 });
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 120 }, 0.0, WHITE);
     }
 
     for (int i = 1; i < 15; i++) {
         // left wall
-        draw_sheet_sprite(
-            game_data->assets->sheet,
-            game_data->assets->sheet_wall,
-            (Vector2){ 4, i*8+4 });
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 0, i*8 }, 0.0, WHITE);
 
         // right wall
-        draw_sheet_sprite(
-            game_data->assets->sheet,
-            game_data->assets->sheet_wall,
-            (Vector2){ 124, i*8+4 });
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 120, i*8 }, 0.0, WHITE);
     }
 }

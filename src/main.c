@@ -2,6 +2,7 @@
 #include "game.h"
 #include "math.h"
 #include "input.h"
+#include "sprite.h"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
@@ -39,11 +40,29 @@ int main(void) {
 
     InitWindow(1280, 720, "bwuh");
 
+    Texture2D sprite_sheet = LoadTexture("assets/sheet.png");
     Assets game_assets = {
-        .sheet = LoadTexture("assets/sheet.png"),
-        .sheet_wall = {0, 8, 8, 8},
-        .sheet_floor = {8, 8, 8, 8},
-        .sheet_player = {72, 0, 16, 16},
+        .sheet = sprite_sheet,
+        .sprite_wall = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 0, 8, 8, 8 },
+            .origin = { 0, 0 },
+        },
+        .sprite_floor = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 8, 8, 8, 8 },
+            .origin = { 0, 0 },
+        },
+        .sprite_player = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 72, 0, 16, 16 },
+            .origin = { 8, 8 },
+        },
+        .sprite_box = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 8, 0, 8, 8 },
+            .origin = { 4, 4 },
+        },
     };
 
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
@@ -56,7 +75,7 @@ int main(void) {
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
 
-        .debug = true,
+        .debug = false,
         .t = 0,
         .dt = 1.0 / 50.0,
         .current_time = GetTime(),
@@ -78,24 +97,32 @@ int main(void) {
     *game_data.current_state = (GameState){0};
     game_data.current_state->game_data = &game_data;
     game_data.current_state->player = (Entity) {
-        .cpos = (Vector2i){ 3, 3 },
+        .pos_pixel = (Vector2i){ 24, 24 },
+        .pos = (Vector2){ 24, 24 },
+
         .normal_friction = 0.85,
         .normal_accel_time = 0.02, // 1 ticks
-        .normal_max_speed = 8.0,
+        .normal_max_speed = 64.0, // pixels per second
 
+        .sprite = &game_assets.sprite_player,
+
+        .c_size = { 8, 14 },
         .c_radius = 6,
         .c_pushes = true,
     };
     ent_array_init(&game_data.current_state->boxes);
     for (int i = 0; i < 32; i++) {
         Entity new_box = {
-            .cpos = (Vector2i) { GetRandomValue(5, 14), GetRandomValue(5, 14) },
-            .fpos = (Vector2) { rand_float(0.0, 1.0), rand_float(0.0, 1.0) },
+            .pos_pixel = (Vector2i){ GetRandomValue(40, 112), GetRandomValue(40, 112) },
             .normal_friction = 0.96,
 
-            .c_radius = 4,
+            .sprite = &game_assets.sprite_box,
+
+            .c_size = { 8, 8 },
+            .c_radius = 3,
             .c_pushes = true,
         };
+        new_box.pos = v2itof(new_box.pos_pixel);
         ent_array_insert(&game_data.current_state->boxes, new_box);
     }
     *game_data.previous_state = *game_data.current_state;
@@ -107,12 +134,14 @@ int main(void) {
     emscripten_set_main_loop_arg(integrate_render_frame, &game_data, 0, 1);
 #else
     // just in case vsync doesnt work, we'll set the target FPS to the current monitor's refresh rate + 1
-    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
+    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()) + 1);
 
     while (!WindowShouldClose())
         integrate_render_frame(&game_data);
 #endif
 
+    MemFree(game_data.previous_state);
+    MemFree(game_data.current_state);
     UnloadTexture(game_assets.sheet);
 
     CloseWindow();

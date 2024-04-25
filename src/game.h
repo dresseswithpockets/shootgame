@@ -5,9 +5,10 @@
 
 typedef struct Assets {
     Texture2D sheet;
-    Rectangle sheet_wall;
-    Rectangle sheet_floor;
-    Rectangle sheet_player;
+    Sprite sprite_wall;
+    Sprite sprite_floor;
+    Sprite sprite_player;
+    Sprite sprite_box;
 } Assets;
 
 typedef struct GameState GameState;
@@ -51,5 +52,4 @@ void integrate_state(GameState* state);
 void interpolate_state(GameState* previous, GameState* current, double alpha);
 void render_state(GameState* state);
 
-void draw_sheet_sprite(Texture2D sheet, Rectangle source, Vector2 pos);
 void draw_room(const GameState* state);

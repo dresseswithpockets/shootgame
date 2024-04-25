@@ -2,6 +2,7 @@
 
 #include "math.h"
 #include "genarray.h"
+#include "sprite.h"
 
 #define MAX_ENTITIES 1024
 
@@ -17,10 +18,12 @@ typedef struct Entity {
         size_t handle_value;
     };
 
-    // position on tile grid
-    Vector2i cpos;
-    // fraction from 0 to 1 representing sub-grid position
-    Vector2 fpos;
+    // integer position in pixels
+    Vector2i pos_pixel;
+    // subpixel position remainder
+    Vector2 pos_subpixel;
+    // total position calculated after moving pos_pixel or pos_subpixel
+    Vector2 pos;
 
     // velocity in cells per second
     Vector2 velocity;
@@ -32,9 +35,13 @@ typedef struct Entity {
     // max running speed, entities will accelerate up to this speed
     float normal_max_speed;
 
+    Sprite* sprite;
+
     // AABB collision info used for collisions with tiles, units are in cells
-    Rectangle c_aabb;
-    // Radius collision info used for character pushing and bullet intersections
+    Vector2i c_size;
+    Vector2 c_size_frac;
+
+    // Radius collision info used for character pushing and bullet intersections, units are in cells
     Vector2 c_radial_center;
     float c_radius;
     bool c_pushes;
@@ -46,23 +53,24 @@ typedef struct Entity {
 GENARRAY_DEFINE(Entity, MAX_ENTITIES, ent)
 typedef struct EntityArray EntityArray;
 
-static inline Vector2 get_pixel_pos(const Entity* entity) {
-    Vector2 pos = {
-        (entity->cpos.x + entity->fpos.x) * CELL_SIZE,
-        (entity->cpos.y + entity->fpos.y) * CELL_SIZE
+static inline Vector2i get_cell_pos(const Entity* entity) {
+    Vector2i pos = {
+        (int)(entity->pos.x / (float)CELL_SIZE),
+        (int)(entity->pos.y / (float)CELL_SIZE)
     };
     return pos;
 }
 
-static inline void set_pixel_pos(Entity* entity, Vector2 pos) {
-    entity->cpos.x = (int)(pos.x / CELL_SIZE);
-    entity->cpos.y = (int)(pos.y / CELL_SIZE);
-    entity->fpos.x = fmodf(pos.x / CELL_SIZE, 1.0f);
-    entity->fpos.y = fmodf(pos.y / CELL_SIZE, 1.0f);
+static inline Vector2 get_cell_frac(const Entity* entity) {
+    Vector2 pos = {
+        fmodf(entity->pos.x, CELL_SIZE),
+        fmodf(entity->pos.y, CELL_SIZE),
+    };
+    return pos;
 }
 
-void draw_player(GameState* state);
-void draw_box(GameState* state); // NOTE: test function
+void draw_ent(Entity* entity);
+void draw_ent_debug(Entity* entity);
 void ent_move(GameState* state, Entity* entity);
 void ent_repel_ent(Entity* self, Entity* other);
 
