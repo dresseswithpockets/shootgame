@@ -12,6 +12,11 @@ TODO add a basic linear bullet
 TODO add shooting to the player
 TODO add health & damage to the player
 TODO add death screen
+TODO add shoot SFX
+TODO add damage SFX
+TODO add basic music loop
+TODO when player dies, stop all music & play death music loop on death screen
+TODO add door entry SFX
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action
