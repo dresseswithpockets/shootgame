@@ -64,7 +64,10 @@ void floor_plan_generate(FloorPlan* floor_plan, int floor_depth) {
     *floor_plan = (FloorPlan){0};
 
     // min_room_count does not include the center room, which is always present
-    int min_room_count = (int)(2.0 * floor_depth + GetRandomValue(3, 4));
+    int min_room_count = (int)(3.33 * floor_depth + GetRandomValue(4, 5));
+    if (min_room_count > 20)
+        min_room_count = 20;
+
     int min_branch_length = min_room_count / 4;
     // must have at least 1 dead end for each: boss room & item room
     int min_dead_ends = 2;

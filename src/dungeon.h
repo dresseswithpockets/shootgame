@@ -2,8 +2,8 @@
 
 #include "math.h"
 
-#define FLOOR_WIDTH 5
-#define FLOOR_HEIGHT 5
+#define FLOOR_WIDTH 9
+#define FLOOR_HEIGHT 9
 
 enum Direction {
     DirectionLeft = 0,
