@@ -52,17 +52,22 @@ void integrate_player(GameState* state, Entity* player) {
         if (abs(player->pos.x - 64) < 4 && state->input_state->move_vertical.value != 0.0) {
             if (HAS_FLAG(player->c_flags, CollisionFlagUp) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionUp)) {
                 state->room_idx.y -= 1;
+                player->pos_pixel = (Vector2i) { 64, 111 };
             } else if (HAS_FLAG(player->c_flags, CollisionFlagDown) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionDown)) {
                 state->room_idx.y += 1;
+                player->pos_pixel = (Vector2i) { 64, 17 };
             }
         } else if (abs(player->pos.y - 64) < 4 && state->input_state->move_horizontal.value != 0.0) {
             if (HAS_FLAG(player->c_flags, CollisionFlagLeft) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionLeft)) {
                 state->room_idx.x -= 1;
+                player->pos_pixel = (Vector2i) { 111, 64 };
             } else if (HAS_FLAG(player->c_flags, CollisionFlagRight) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionRight)) {
                 state->room_idx.x += 1;
+                player->pos_pixel = (Vector2i) { 17, 64 };
             }
         }
 
+        player->pos = Vector2Add(v2itof(player->pos_pixel), player->pos_subpixel);
         player->room_idx = state->room_idx;
     }
 }
