@@ -105,7 +105,11 @@ int main(void) {
     *game_data.current_state = (GameState){0};
     game_data.current_state->game_data = &game_data;
     game_data.current_state->input_state = &game_data.input_state;
-    game_data.current_state->player = (Entity) {
+    ent_array_init(&game_data.current_state->entities);
+    Entity new_player = {
+        .kind_flags = KindPlayer,
+        .room_idx = { 2, 2 },
+
         .pos_pixel = (Vector2i){ 24, 24 },
         .pos = (Vector2){ 24, 24 },
 
@@ -119,9 +123,12 @@ int main(void) {
         .c_radius = 6,
         .c_pushes = true,
     };
-    ent_array_init(&game_data.current_state->boxes);
+    ent_array_insert(&game_data.current_state->entities, new_player);
     for (int i = 0; i < 32; i++) {
         Entity new_box = {
+            .kind_flags = KindBox,
+            .room_idx = { 2, 2 },
+
             .pos_pixel = (Vector2i){ GetRandomValue(40, 112), GetRandomValue(40, 112) },
             .normal_friction = 0.96,
 
@@ -132,7 +139,7 @@ int main(void) {
             .c_pushes = true,
         };
         new_box.pos = v2itof(new_box.pos_pixel);
-        ent_array_insert(&game_data.current_state->boxes, new_box);
+        ent_array_insert(&game_data.current_state->entities, new_box);
     }
     // start player at center of room
     game_data.current_state->room_idx = (Vector2i) { 2, 2 };

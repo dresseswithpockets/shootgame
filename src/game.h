@@ -51,8 +51,7 @@ struct GameState {
     Vector2i room_idx;
     FloorPlan floor_plan;
 
-    Entity player;
-    EntityArray boxes;
+    EntityArray entities;
 
     bool previously_moving_diag;
 };

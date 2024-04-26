@@ -24,11 +24,22 @@ enum CollisionFlag {
 #define COLLISION_FLAG_DIR_MASK 0b00001111
 #define HAS_COLLISION(flag) ((flag) & COLLISION_FLAG_DIR_MASK)
 
+enum EntityKindFlag {
+    KindNone = 0,
+    KindPlayer = 1,
+    KindBox = 2,
+};
+
 typedef struct Entity {
     union {
         Handle handle;
         size_t handle_value;
     };
+
+    enum EntityKindFlag kind_flags;
+
+    // the floor room that contains this entity
+    Vector2i room_idx;
 
     // integer position in pixels
     Vector2i pos_pixel;
@@ -86,6 +97,10 @@ void draw_ent_debug(Entity* entity);
 void ent_move(GameState* state, Entity* entity);
 void ent_repel_ent(Entity* self, Entity* other);
 
-// enumerate each occupied entry in an EntityArrayEntry - assumes that genarrays are always fully initialized to their max capacity
+// enumerate each occupied entry in an EntityArray - assumes that genarrays are always fully initialized to their max capacity
 #define ENT_ARRAY_FOREACH(arr, iter) for (struct EntityArrayEntry* iter = &(arr).data[0]; iter != &(arr).data[MAX_ENTITIES-1]; iter++) if (iter->occupied)
+
 #define ENT_REF_ARRAY_FOREACH(arr, iter) for (struct EntityArrayEntry* iter = &(arr)->data[0]; iter != &(arr)->data[MAX_ENTITIES-1]; iter++) if (iter->occupied)
+
+// enumerate each occupied entry in an EntityArray, only if they are in the same room as the roomidx provided
+#define ENT_ARRAY_FOREACH_INROOM(arr, iter, roomidx) for (struct EntityArrayEntry* iter = &(arr).data[0]; iter != &(arr).data[MAX_ENTITIES-1]; iter++) if (iter->occupied && vector2i_eq(iter->value.room_idx, (roomidx)))

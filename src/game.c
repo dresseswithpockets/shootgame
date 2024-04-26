@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "entity.h"
 #include "game.h"
 #include "input.h"
@@ -11,11 +12,9 @@ void update_input_state(GameData* game_data) {
     virtual_axis_update(&game_data->input_state.shoot_vertical);
 }
 
-void integrate_player(GameState* state) {
-    const GameData* game_data = state->game_data;
-
-    int in_x = signi(game_data->input_state.move_horizontal.value);
-    int in_y = signi(game_data->input_state.move_vertical.value);
+void integrate_player(GameState* state, Entity* player) {
+    int in_x = signi(state->input_state->move_horizontal.value);
+    int in_y = signi(state->input_state->move_vertical.value);
 
     Vector2 wish_dir = (Vector2){ 0.0, 0.0 };
     if (in_x != 0 || in_y != 0) {
@@ -26,43 +25,45 @@ void integrate_player(GameState* state) {
     // NOTE(snale): honestly im not sure if this approach feels good, and using accelleration and
     //              friction might not be good for the bullet hell parts of the game. guess we'll
     //              see from playtesting.
-    Vector2 wish_accel = Vector2Scale(wish_dir, state->game_data->dt * state->player.normal_max_speed / state->player.normal_accel_time);
-    state->player.velocity = Vector2Add(state->player.velocity, wish_accel);
-    float max_speed_sqr = state->player.normal_max_speed * state->player.normal_max_speed;
-    if (Vector2LengthSqr(state->player.velocity) >= max_speed_sqr)
-        state->player.velocity = Vector2Scale(Vector2Normalize(state->player.velocity), state->player.normal_max_speed);
+    Vector2 wish_accel = Vector2Scale(wish_dir, state->game_data->dt * player->normal_max_speed / player->normal_accel_time);
+    player->velocity = Vector2Add(player->velocity, wish_accel);
+    float max_speed_sqr = player->normal_max_speed * player->normal_max_speed;
+    if (Vector2LengthSqr(player->velocity) >= max_speed_sqr)
+        player->velocity = Vector2Scale(Vector2Normalize(player->velocity), player->normal_max_speed);
 
     // fix cobblestoning
     // TODO: this still seems broken - there is a stutter, though it might be caused by friction?
     //       it might actually be because we aren't storing a subpixel position, only a subcell position
     //       that we truncate
     if (in_x != 0 && in_y != 0) {
-        state->player.pos_subpixel.x = 0.5;
-        state->player.pos_subpixel.y = 0.5;
-        state->player.pos.x = floorf(state->player.pos.x) + 0.5;
-        state->player.pos.y = floorf(state->player.pos.y) + 0.5;
+        player->pos_subpixel.x = 0.5;
+        player->pos_subpixel.y = 0.5;
+        player->pos.x = floorf(player->pos.x) + 0.5;
+        player->pos.y = floorf(player->pos.y) + 0.5;
     }
 
     state->previously_moving_diag = in_x != 0 && in_y != 0;
 
-    ent_move(state, &state->player);
+    ent_move(state, player);
 
     // ent_move sets up collision flags on the entity, check for player entering doors
     // TODO: very naive/broken room movement. Should set the player's position, and also change entity group
-    if (HAS_COLLISION(state->player.c_flags)) {
-        if (abs(state->player.pos.x - 64) < 4 && state->input_state->move_vertical.value != 0.0) {
-            if (HAS_FLAG(state->player.c_flags, CollisionFlagUp) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionUp)) {
+    if (HAS_COLLISION(player->c_flags)) {
+        if (abs(player->pos.x - 64) < 4 && state->input_state->move_vertical.value != 0.0) {
+            if (HAS_FLAG(player->c_flags, CollisionFlagUp) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionUp)) {
                 state->room_idx.y -= 1;
-            } else if (HAS_FLAG(state->player.c_flags, CollisionFlagDown) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionDown)) {
+            } else if (HAS_FLAG(player->c_flags, CollisionFlagDown) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionDown)) {
                 state->room_idx.y += 1;
             }
-        } else if (abs(state->player.pos.y - 64) < 4 && state->input_state->move_horizontal.value != 0.0) {
-            if (HAS_FLAG(state->player.c_flags, CollisionFlagLeft) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionLeft)) {
+        } else if (abs(player->pos.y - 64) < 4 && state->input_state->move_horizontal.value != 0.0) {
+            if (HAS_FLAG(player->c_flags, CollisionFlagLeft) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionLeft)) {
                 state->room_idx.x -= 1;
-            } else if (HAS_FLAG(state->player.c_flags, CollisionFlagRight) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionRight)) {
+            } else if (HAS_FLAG(player->c_flags, CollisionFlagRight) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionRight)) {
                 state->room_idx.x += 1;
             }
         }
+
+        player->room_idx = state->room_idx;
     }
 }
 
@@ -73,25 +74,34 @@ void integrate_state(GameState* state) {
 
     if (state->paused) return;
 
-    integrate_player(state);
-
     // example entity pushing
-    ENT_ARRAY_FOREACH(state->boxes, box_entry_a) {
-        Entity* box = &box_entry_a->value;
-        ent_repel_ent(&state->player, box);
-
-        ENT_ARRAY_FOREACH(state->boxes, box_entry_b) {
-            if (box_entry_a == box_entry_b) continue;
-            ent_repel_ent(box, &box_entry_b->value);
+    ENT_ARRAY_FOREACH_INROOM(state->entities, entry_a, state->room_idx) {
+        Entity* entity = &entry_a->value;
+        ENT_ARRAY_FOREACH_INROOM(state->entities, entry_b, state->room_idx) {
+            if (entry_a == entry_b) continue;
+            ent_repel_ent(entity, &entry_b->value);
         }
     }
 
-    ENT_ARRAY_FOREACH(state->boxes, box_entry) {
-        ent_move(state, &box_entry->value);
+    ENT_ARRAY_FOREACH_INROOM(state->entities, entry, state->room_idx) {
+        if (HAS_FLAG(entry->value.kind_flags, KindPlayer)) {
+            integrate_player(state, &entry->value);
+        } else if (HAS_FLAG(entry->value.kind_flags, KindBox)) {
+            ent_move(state, &entry->value);
+        }
     }
 }
 
 void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
+    // if the entity has changed rooms, it wouldnt make sense for it to interpolate from the old room,
+    // so we want to just use the new positions we copied from the new entity state, rather than
+    // overriding them. If we didnt do this, and just continued on to overriding positions,
+    // interpolation would result in rendering the entities are the wrong position for a few frames
+    if (!vector2i_eq(entity->room_idx, next->room_idx)) {
+        *entity = *next;
+        return;
+    }
+
     // we will interpolate the entity's position, but we'll copy everything over from current
     // to previous, to ensure we're otherwise rendering the most correct information to the
     // player, as early as possible
@@ -108,11 +118,9 @@ void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
 }
 
 void interpolate_state(GameState* previous, GameState* current, double alpha) {
-    interpolate_entity(&previous->player, &current->player, alpha);
-
-    ENT_ARRAY_FOREACH(current->boxes, box_entry) {
-        Entity* current_ent = &box_entry->value;
-        Entity* previous_ent = ent_array_get(&previous->boxes, current_ent->handle);
+    ENT_ARRAY_FOREACH_INROOM(current->entities, entry, current->room_idx) {
+        Entity* current_ent = &entry->value;
+        Entity* previous_ent = ent_array_get(&previous->entities, current_ent->handle);
         if (previous_ent) {
             interpolate_entity(previous_ent, current_ent, alpha);
         }
@@ -121,21 +129,17 @@ void interpolate_state(GameState* previous, GameState* current, double alpha) {
     // only the current state will have the paused flag if it was just paused this frame,
     // render_state only gets the interpolated previous state
     previous->paused = current->paused;
+    previous->room_idx = current->room_idx;
 }
 
 void render_state(GameState* state) {
     ClearBackground(BLACK);
     draw_room(state);
-
-    ENT_ARRAY_FOREACH(state->boxes, box_entry) {
-        draw_ent(&box_entry->value);
+    ENT_ARRAY_FOREACH_INROOM(state->entities, entry, state->room_idx) {
+        draw_ent(&entry->value);
         if (state->game_data->debug) {
-            draw_ent_debug(&box_entry->value);
+            draw_ent_debug(&entry->value);
         }
-    }
-    draw_ent(&state->player);
-    if (state->game_data->debug) {
-        draw_ent_debug(&state->player);
     }
 }
 

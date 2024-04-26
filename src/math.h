@@ -25,6 +25,10 @@ static inline Vector2i vector2i_lerp(Vector2i a, Vector2i b, float t) {
     return v2ftoi(Vector2Lerp(v2itof(a), v2itof(b), t));
 }
 
+static inline bool vector2i_eq(Vector2i a, Vector2i b) {
+    return a.x == b.x && a.y == b.y;
+}
+
 static inline float rand_float(float min, float max) {
     return ((float)GetRandomValue(0, INT_MAX)/(float)(INT_MAX)) * (max - min) + min;
 }

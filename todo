@@ -4,7 +4,7 @@ DONE add entity-entity collision & flagged pushing
 DONE use generational handles for integration and entity referencing
 DONE add game pausing & simple "PAUSED" overlay text
 DONE add interactable doors
-TODO remove "boxes" entity array prototype, and add an entity array to each room - integration only occurs on the current room; reserve Handle(0, 0) for Player entity
+DONE remove "boxes" entity array prototype, replace with monolithic entity array
 TODO add BoI-style floor plan generation (BFS branch)
 TODO add weapon/source/thingie
 TODO add sprite flipping to player based on direction of travel & shoot direction
