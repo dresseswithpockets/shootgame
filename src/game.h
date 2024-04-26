@@ -2,6 +2,7 @@
 
 #include "entity.h"
 #include "input.h"
+#include "dungeon.h"
 
 typedef struct Assets {
     Texture2D sheet;
@@ -9,6 +10,7 @@ typedef struct Assets {
     Sprite sprite_floor;
     Sprite sprite_player;
     Sprite sprite_box;
+    Sprite sprite_door_normal;
 } Assets;
 
 typedef struct GameState GameState;
@@ -45,6 +47,9 @@ struct GameState {
     InputState* input_state;
 
     bool paused;
+
+    Vector2i room_idx;
+    FloorPlan floor_plan;
 
     Entity player;
     EntityArray boxes;

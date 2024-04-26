@@ -4,13 +4,25 @@
 #include "genarray.h"
 #include "sprite.h"
 
-#define MAX_ENTITIES 1024
+// since entities are shared across rooms, we have a pretty large limit. in practice, this can
+// probably be way lower. I will have to do some testing to see what the reasonable limit is.
+#define MAX_ENTITIES 8192
 
 // game.h forward decls
 typedef struct GameData GameData;
 typedef struct GameState GameState;
 
 #define CELL_SIZE 8
+
+enum CollisionFlag {
+    CollisionFlagLeft = 1,
+    CollisionFlagUp = 1 << 1,
+    CollisionFlagRight = 1 << 2,
+    CollisionFlagDown = 1 << 3,
+};
+
+#define COLLISION_FLAG_DIR_MASK 0b00001111
+#define HAS_COLLISION(flag) ((flag) & COLLISION_FLAG_DIR_MASK)
 
 typedef struct Entity {
     union {
@@ -39,7 +51,7 @@ typedef struct Entity {
 
     // AABB collision info used for collisions with tiles, units are in cells
     Vector2i c_size;
-    Vector2 c_size_frac;
+    enum CollisionFlag c_flags;
 
     // Radius collision info used for character pushing and bullet intersections, units are in cells
     Vector2 c_radial_center;

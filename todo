@@ -3,7 +3,8 @@ DONE add entity-room collision
 DONE add entity-entity collision & flagged pushing
 DONE use generational handles for integration and entity referencing
 DONE add game pausing & simple "PAUSED" overlay text
-TODO add interactable doors
+DONE add interactable doors
+TODO remove "boxes" entity array prototype, and add an entity array to each room - integration only occurs on the current room; reserve Handle(0, 0) for Player entity
 TODO add BoI-style floor plan generation (BFS branch)
 TODO add weapon/source/thingie
 TODO add sprite flipping to player based on direction of travel & shoot direction
@@ -16,7 +17,9 @@ TODO add damage SFX
 TODO add basic music loop
 TODO when player dies, stop all music & play death music loop on death screen
 TODO add door entry SFX
+TODO render entities with z-ordering (e.g. just sort by their y position)
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
+TODO render mini-map menu showing dungeon layout
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action

@@ -1,3 +1,4 @@
+#include "dungeon.h"
 #include "entity.h"
 #include "game.h"
 #include "math.h"
@@ -64,6 +65,11 @@ int main(void) {
             .source = { 8, 0, 8, 8 },
             .origin = { 4, 4 },
         },
+        .sprite_door_normal = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 24, 8, 16, 8 },
+            .origin = { 8, 4 },
+        },
     };
 
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
@@ -128,6 +134,14 @@ int main(void) {
         new_box.pos = v2itof(new_box.pos_pixel);
         ent_array_insert(&game_data.current_state->boxes, new_box);
     }
+    // start player at center of room
+    game_data.current_state->room_idx = (Vector2i) { 2, 2 };
+    // generate initial floor plan
+    floor_plan_generate(&game_data.current_state->floor_plan);
+
+    // this method of deep copying requires that the game state hold no pointers with state lifetimes
+    // e.g. InputState and GameData have lifetimes beyond the state's lifetime, and its expected
+    // that those pointers get copied between the current and previous state, so its fine
     *game_data.previous_state = *game_data.current_state;
 
 #if defined(PLATFORM_WEB)

@@ -11,6 +11,7 @@ typedef struct Vector2i {
 } Vector2i;
 
 #define ARRAY_LEN(arr) (sizeof(arr)/sizeof(arr[0]))
+#define HAS_FLAG(value, flag) (((value) & (flag)) == (flag))
 
 static inline Vector2 v2itof(Vector2i vector) {
     return (Vector2) {(float)vector.x, (float)vector.y};

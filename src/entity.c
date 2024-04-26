@@ -14,7 +14,7 @@ Vector2 get_world_radial_center(const Entity* entity) {
 void draw_ent(Entity* entity) {
     // TODO: entities can have multiple sprites parented to them, with an arbitrary offset
     // for now, entities just have the one sprite, and it has no offset
-    draw_sprite(entity->sprite, entity->pos, 0.0, WHITE);
+    draw_sprite(entity->sprite, entity->pos);
 }
 
 void draw_ent_debug(Entity* entity) {
@@ -72,10 +72,12 @@ void ent_move(GameState* state, Entity* entity) {
     entity->pos_subpixel = Vector2Add(entity->pos_subpixel, Vector2Scale(entity->velocity, state->game_data->dt));
     entity->velocity = Vector2Scale(entity->velocity, entity->normal_friction);
 
+    entity->c_flags = 0;
     while (entity->pos_subpixel.x >= 1) {
         if (pixel_has_collision(entity->pos_pixel.x + (entity->c_size.x / 2) + 1, entity->pos_pixel.y)) {
             entity->pos_subpixel.x = 0.99;
             entity->velocity.x = 0;
+            entity->c_flags |= CollisionFlagRight;
         } else {
             entity->pos_subpixel.x -= 1;
             entity->pos_pixel.x += 1;
@@ -85,6 +87,7 @@ void ent_move(GameState* state, Entity* entity) {
         if (pixel_has_collision(entity->pos_pixel.x - (entity->c_size.x / 2) - 1, entity->pos_pixel.y)) {
             entity->pos_subpixel.x = 0;
             entity->velocity.x = 0;
+            entity->c_flags |= CollisionFlagLeft;
         } else {
             entity->pos_subpixel.x += 1;
             entity->pos_pixel.x -= 1;
@@ -95,6 +98,7 @@ void ent_move(GameState* state, Entity* entity) {
         if (pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y + (entity->c_size.y / 2) + 1)) {
             entity->pos_subpixel.y = 0.99;
             entity->velocity.y = 0;
+            entity->c_flags |= CollisionFlagDown;
         } else {
             entity->pos_subpixel.y -= 1;
             entity->pos_pixel.y += 1;
@@ -104,6 +108,7 @@ void ent_move(GameState* state, Entity* entity) {
         if (pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y - (entity->c_size.y / 2) - 1)) {
             entity->pos_subpixel.y = 0;
             entity->velocity.y = 0;
+            entity->c_flags |= CollisionFlagUp;
         } else {
             entity->pos_subpixel.y += 1;
             entity->pos_pixel.y -= 1;

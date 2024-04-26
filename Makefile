@@ -52,10 +52,10 @@ PCH_DEP = $(SRCDIR)/pch-src.h
 PCH_HEADERS = $(IDIR)/raylib.h $(IDIR)/raymath.h $(IDIR)/rlgl.h
 PCH_OUT = $(PCH_SRC).gch
 
-_SRC_HEADERS = entity.h game.h math.h input.h genarray.h sprite.h dynamic_array.h
+_SRC_HEADERS = entity.h game.h math.h input.h genarray.h sprite.h dynamic_array.h dungeon.h
 SRC_HEADERS=$(patsubst %,$(SRCDIR)/%,$(_SRC_HEADERS))
 
-_OBJ = main.o game.o entity.o input.o sprite.o dynamic_array.o
+_OBJ = main.o game.o entity.o input.o sprite.o dynamic_array.o dungeon.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 # main output

@@ -44,6 +44,26 @@ void integrate_player(GameState* state) {
     }
 
     state->previously_moving_diag = in_x != 0 && in_y != 0;
+
+    ent_move(state, &state->player);
+
+    // ent_move sets up collision flags on the entity, check for player entering doors
+    // TODO: very naive/broken room movement. Should set the player's position, and also change entity group
+    if (HAS_COLLISION(state->player.c_flags)) {
+        if (abs(state->player.pos.x - 64) < 4 && state->input_state->move_vertical.value != 0.0) {
+            if (HAS_FLAG(state->player.c_flags, CollisionFlagUp) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionUp)) {
+                state->room_idx.y -= 1;
+            } else if (HAS_FLAG(state->player.c_flags, CollisionFlagDown) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionDown)) {
+                state->room_idx.y += 1;
+            }
+        } else if (abs(state->player.pos.y - 64) < 4 && state->input_state->move_horizontal.value != 0.0) {
+            if (HAS_FLAG(state->player.c_flags, CollisionFlagLeft) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionLeft)) {
+                state->room_idx.x -= 1;
+            } else if (HAS_FLAG(state->player.c_flags, CollisionFlagRight) && floor_has_room_dir(&state->floor_plan, state->room_idx, DirectionRight)) {
+                state->room_idx.x += 1;
+            }
+        }
+    }
 }
 
 void integrate_state(GameState* state) {
@@ -69,8 +89,6 @@ void integrate_state(GameState* state) {
     ENT_ARRAY_FOREACH(state->boxes, box_entry) {
         ent_move(state, &box_entry->value);
     }
-
-    ent_move(state, &state->player);
 }
 
 void interpolate_entity(Entity* entity, const Entity* next, double alpha) {
@@ -139,16 +157,36 @@ void draw_room(const GameState* state) {
     const GameData* game_data = state->game_data;
     for (int i = 0; i < 16; i++) {
         // top wall
-        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 0 }, 0.0, WHITE);
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 0 });
         // bottom wall
-        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 120 }, 0.0, WHITE);
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ i*8, 120 });
     }
 
     for (int i = 1; i < 15; i++) {
         // left wall
-        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 0, i*8 }, 0.0, WHITE);
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 0, i*8 });
 
         // right wall
-        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 120, i*8 }, 0.0, WHITE);
+        draw_sprite(&game_data->assets->sprite_wall, (Vector2){ 120, i*8 });
+    }
+
+    // top door
+    if (state->room_idx.y > 0 && state->floor_plan.rooms[state->room_idx.x][state->room_idx.y - 1]) {
+        draw_sprite_ex(&game_data->assets->sprite_door_normal, (Vector2){ 64, 4 }, 0.0, WHITE, false, false);
+    }
+
+    // bottom door
+    if (state->room_idx.y < FLOOR_HEIGHT - 1 && state->floor_plan.rooms[state->room_idx.x][state->room_idx.y + 1]) {
+        draw_sprite_ex(&game_data->assets->sprite_door_normal, (Vector2){ 64, 124 }, 0.0, WHITE, false, true);
+    }
+
+    // left door
+    if (state->room_idx.x > 0 && state->floor_plan.rooms[state->room_idx.x - 1][state->room_idx.y]) {
+        draw_sprite_ex(&game_data->assets->sprite_door_normal, (Vector2){ 4, 64 }, -90, WHITE, false, false);
+    }
+
+    // right door
+    if (state->room_idx.x < FLOOR_WIDTH - 1 && state->floor_plan.rooms[state->room_idx.x + 1][state->room_idx.y]) {
+        draw_sprite_ex(&game_data->assets->sprite_door_normal, (Vector2){ 124, 64 }, -90, WHITE, false, true);
     }
 }
