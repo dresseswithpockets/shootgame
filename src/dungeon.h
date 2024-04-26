@@ -23,5 +23,10 @@ typedef struct FloorPlan {
     Vector2i item;
 } FloorPlan;
 
-void floor_plan_generate(FloorPlan* floor_plan, int floor_depth);
+/// @brief generate a floor plan with branching paths
+/// @param floor_plan the target floor plan
+/// @param floor_depth the current "level" the player is one, should be at least 1. affects how many rooms are spawned.
+/// @return true if the plan successfully generated, false otherwise
+bool floor_plan_generate(FloorPlan* floor_plan, int floor_depth);
+
 bool floor_has_room_dir(FloorPlan* floor_plan, Vector2i cell, enum Direction direction);

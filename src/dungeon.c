@@ -60,7 +60,7 @@ int compare_distance(const void* a, const void* b) {
     return 0;
 }
 
-void floor_plan_generate(FloorPlan* floor_plan, int floor_depth) {
+bool floor_plan_generate(FloorPlan* floor_plan, int floor_depth) {
     *floor_plan = (FloorPlan){0};
 
     // min_room_count does not include the center room, which is always present
@@ -160,18 +160,27 @@ void floor_plan_generate(FloorPlan* floor_plan, int floor_depth) {
 
     // if there is a dead end deficit, then we will randomly select new ones to add
     int deficit = min_dead_ends - real_dead_ends.stack_len;
-    assert(potential_dead_ends.stack_len >= deficit && "we hit the maximum deadends possible in the floor plan 😵‍💫😵‍💫");
+    if (potential_dead_ends.stack_len < deficit) {
+        // we hit the maximum deadends possible in the floor plan
+        return false;
+    }
+
     for (int i = 0; i < deficit; i++) {
         int index = GetRandomValue(0, potential_dead_ends.stack_len - 1);
         push_back(&real_dead_ends, potential_dead_ends.stack[index]);
         remove(&potential_dead_ends, index);
     }
 
+    if (real_dead_ends.stack_len < min_dead_ends) {
+        return false;
+    }
+
     // sort the real dead ends by distance from center, and pick the furthest for special rooms
-    assert(real_dead_ends.stack_len >= min_dead_ends);
     qsort(&real_dead_ends.stack, real_dead_ends.stack_len, sizeof(Vector2i), compare_distance);
     floor_plan->boss = real_dead_ends.stack[0];
     floor_plan->item = real_dead_ends.stack[1];
+
+    return true;
 }
 
 bool floor_has_room_dir(FloorPlan* floor_plan, Vector2i cell, enum Direction direction) {
