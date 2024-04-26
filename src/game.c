@@ -4,6 +4,7 @@
 #include "math.h"
 
 void update_input_state(GameData* game_data) {
+    virtual_button_update(&game_data->input_state.pause);
     virtual_axis_update(&game_data->input_state.move_horizontal);
     virtual_axis_update(&game_data->input_state.move_vertical);
     virtual_axis_update(&game_data->input_state.shoot_horizontal);
@@ -46,6 +47,12 @@ void integrate_player(GameState* state) {
 }
 
 void integrate_state(GameState* state) {
+    if (state->input_state->pause.is_down && state->input_state->pause.this_frame) {
+        state->paused = !state->paused;
+    }
+
+    if (state->paused) return;
+
     integrate_player(state);
 
     // example entity pushing
@@ -92,6 +99,10 @@ void interpolate_state(GameState* previous, GameState* current, double alpha) {
             interpolate_entity(previous_ent, current_ent, alpha);
         }
     }
+
+    // only the current state will have the paused flag if it was just paused this frame,
+    // render_state only gets the interpolated previous state
+    previous->paused = current->paused;
 }
 
 void render_state(GameState* state) {
@@ -108,8 +119,20 @@ void render_state(GameState* state) {
     if (state->game_data->debug) {
         draw_ent_debug(&state->player);
     }
+}
 
-    DrawRectangleLines(0, 0, 128, 128, RED);
+void render_state_menu(GameState* state) {
+    if (state->paused) {
+        int half_width = GetRenderWidth() / 2;
+        int third_height = GetRenderHeight() / 3;
+        int measure = MeasureText("paused", 64) / 2;
+        int border = 2;
+        DrawText("paused", half_width - measure - border, third_height, 64, WHITE);
+        DrawText("paused", half_width - measure + border, third_height, 64, WHITE);
+        DrawText("paused", half_width - measure, third_height - border, 64, WHITE);
+        DrawText("paused", half_width - measure, third_height + border, 64, WHITE);
+        DrawText("paused", half_width - measure, third_height, 64, BLACK);
+    }
 }
 
 void draw_room(const GameState* state) {

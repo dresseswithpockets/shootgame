@@ -2,8 +2,7 @@
 DONE add entity-room collision
 DONE add entity-entity collision & flagged pushing
 DONE use generational handles for integration and entity referencing
-TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
-TODO add game pausing & simple "PAUSED" overlay text
+DONE add game pausing & simple "PAUSED" overlay text
 TODO add interactable doors
 TODO add BoI-style floor plan generation (BFS branch)
 TODO add weapon/source/thingie
@@ -17,6 +16,7 @@ TODO add damage SFX
 TODO add basic music loop
 TODO when player dies, stop all music & play death music loop on death screen
 TODO add door entry SFX
+TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action

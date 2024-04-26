@@ -39,6 +39,7 @@ int main(void) {
 #endif
 
     InitWindow(1280, 720, "bwuh");
+    SetExitKey(KEY_F1);
 
     Texture2D sprite_sheet = LoadTexture("assets/sheet.png");
     Assets game_assets = {
@@ -84,6 +85,7 @@ int main(void) {
     game_data.input_state = (InputState) {0};
 
     // setup default inputs
+    virtual_button_add_key(&game_data.input_state.pause, KEY_ESCAPE);
     virtual_axis_add_keys(&game_data.input_state.move_horizontal, KEY_A, KEY_D);
     virtual_axis_add_keys(&game_data.input_state.move_vertical, KEY_W, KEY_S);
     virtual_axis_add_keys(&game_data.input_state.shoot_horizontal, KEY_LEFT, KEY_RIGHT);
@@ -96,6 +98,7 @@ int main(void) {
     // setup some initial test data
     *game_data.current_state = (GameState){0};
     game_data.current_state->game_data = &game_data;
+    game_data.current_state->input_state = &game_data.input_state;
     game_data.current_state->player = (Entity) {
         .pos_pixel = (Vector2i){ 24, 24 },
         .pos = (Vector2){ 24, 24 },
@@ -192,6 +195,8 @@ void integrate_render_frame(void* user_data) {
         (Vector2){0, 0},
         0.0f,
         WHITE);
+
+    render_state_menu(game_data->previous_state);
 
     EndDrawing();
 }

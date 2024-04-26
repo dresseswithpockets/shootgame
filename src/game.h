@@ -15,6 +15,8 @@ typedef struct GameState GameState;
 typedef struct GameData GameData;
 
 typedef struct InputState {
+    VirtualButton pause;
+
     VirtualAxis move_horizontal;
     VirtualAxis move_vertical;
 
@@ -40,6 +42,9 @@ struct GameData {
 
 struct GameState {
     GameData* game_data;
+    InputState* input_state;
+
+    bool paused;
 
     Entity player;
     EntityArray boxes;
@@ -51,5 +56,6 @@ void update_input_state(GameData* state);
 void integrate_state(GameState* state);
 void interpolate_state(GameState* previous, GameState* current, double alpha);
 void render_state(GameState* state);
+void render_state_menu(GameState* state);
 
 void draw_room(const GameState* state);
