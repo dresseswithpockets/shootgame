@@ -19,7 +19,9 @@ struct RoomLink {
 
 typedef struct FloorPlan {
     bool rooms[FLOOR_WIDTH][FLOOR_HEIGHT];
+    Vector2i boss;
+    Vector2i item;
 } FloorPlan;
 
-void floor_plan_generate(FloorPlan* floor_plan);
+void floor_plan_generate(FloorPlan* floor_plan, int floor_depth);
 bool floor_has_room_dir(FloorPlan* floor_plan, Vector2i cell, enum Direction direction);

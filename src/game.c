@@ -160,6 +160,15 @@ void render_state_menu(GameState* state) {
         DrawText("paused", half_width - measure, third_height + border, 64, WHITE);
         DrawText("paused", half_width - measure, third_height, 64, BLACK);
     }
+
+    if (state->game_data->debug) {
+        if (vector2i_eq(state->room_idx, state->floor_plan.boss)) {
+            DrawText("BOSS ROOM", 8, 8, 48, WHITE);
+        }
+        if (vector2i_eq(state->room_idx, state->floor_plan.item)) {
+            DrawText("ITEM ROOM", 8, 8, 48, WHITE);
+        }
+    }
 }
 
 void draw_room(const GameState* state) {

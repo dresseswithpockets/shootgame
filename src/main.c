@@ -144,7 +144,7 @@ int main(void) {
     // start player at center of room
     game_data.current_state->room_idx = (Vector2i) { 2, 2 };
     // generate initial floor plan
-    floor_plan_generate(&game_data.current_state->floor_plan);
+    floor_plan_generate(&game_data.current_state->floor_plan, 1);
 
     // this method of deep copying requires that the game state hold no pointers with state lifetimes
     // e.g. InputState and GameData have lifetimes beyond the state's lifetime, and its expected
