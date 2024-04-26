@@ -20,12 +20,14 @@ TODO add door entry SFX
 TODO render entities with z-ordering (e.g. just sort by their y position)
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
 TODO render mini-map menu showing dungeon layout
+TODO gamepad axis deadzone remapping
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action
 DONE refactor move_* and shoot_* actions to behave like virtual axes which can be backed by gamepad axes or button pairs
 
 # devex
+TODO hot-reloading
 TODO add in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
 TODO add in-game quake-style developer console
 TODO add in-game developer menu for setting dungeon parameters, room parameters, entity parameters, altering the shape of the dungeon, placing/deleting entities, etc. dev menu should pause the update loop by default, and allow the user to "step" the update loop
