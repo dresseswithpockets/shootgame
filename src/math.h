@@ -29,6 +29,14 @@ static inline bool vector2i_eq(Vector2i a, Vector2i b) {
     return a.x == b.x && a.y == b.y;
 }
 
+static inline Vector2 vector2_polar(float length, float theta) {
+    Vector2 result = {
+        cosf(theta) * length,
+        sinf(theta) * length,
+    };
+    return result;
+}
+
 static inline float rand_float(float min, float max) {
     return ((float)GetRandomValue(0, INT_MAX)/(float)(INT_MAX)) * (max - min) + min;
 }

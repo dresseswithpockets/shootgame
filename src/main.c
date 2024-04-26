@@ -70,6 +70,11 @@ int main(void) {
             .source = { 24, 8, 16, 8 },
             .origin = { 8, 4 },
         },
+        .sprite_source = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 120, 16, 5, 5 },
+            .origin = { 2.5, 2.5 },
+        },
     };
 
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
@@ -122,6 +127,10 @@ int main(void) {
         .c_size = { 8, 14 },
         .c_radius = 6,
         .c_pushes = true,
+    };
+    new_player.sources[0] = (struct WeaponSource) {
+        .occupied = true,
+        .sprite = &game_assets.sprite_source,
     };
     ent_array_insert(&game_data.current_state->entities, new_player);
     for (int i = 0; i < 32; i++) {

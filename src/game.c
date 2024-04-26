@@ -13,13 +13,14 @@ void update_input_state(GameData* game_data) {
 }
 
 void integrate_player(GameState* state, Entity* player) {
-    int in_x = signi(state->input_state->move_horizontal.value);
-    int in_y = signi(state->input_state->move_vertical.value);
+    Vector2 wish_dir = (Vector2){ state->input_state->move_horizontal.value, state->input_state->move_vertical.value };
+    if (wish_dir.x != 0 || wish_dir.y != 0) {
+        wish_dir = Vector2Normalize(wish_dir);
+    }
 
-    Vector2 wish_dir = (Vector2){ 0.0, 0.0 };
-    if (in_x != 0 || in_y != 0) {
-        float mag = sqrtf(in_x * in_x + in_y * in_y);
-        wish_dir = (Vector2){ in_x / mag, in_y / mag };
+    Vector2 shoot_dir = (Vector2){ state->input_state->shoot_horizontal.value, state->input_state->shoot_vertical.value };
+    if (shoot_dir.x != 0 || wish_dir.y != 0) {
+        shoot_dir = Vector2Normalize(shoot_dir);
     }
 
     // NOTE(snale): honestly im not sure if this approach feels good, and using accelleration and
@@ -35,14 +36,25 @@ void integrate_player(GameState* state, Entity* player) {
     // TODO: this still seems broken - there is a stutter, though it might be caused by friction?
     //       it might actually be because we aren't storing a subpixel position, only a subcell position
     //       that we truncate
-    if (in_x != 0 && in_y != 0) {
+    if (wish_dir.x != 0 && wish_dir.y != 0) {
         player->pos_subpixel.x = 0.5;
         player->pos_subpixel.y = 0.5;
         player->pos.x = floorf(player->pos.x) + 0.5;
         player->pos.y = floorf(player->pos.y) + 0.5;
     }
 
-    state->previously_moving_diag = in_x != 0 && in_y != 0;
+    state->previously_moving_diag = wish_dir.x != 0 && wish_dir.y != 0;
+
+    // updating weapon source angle & positions
+    if (shoot_dir.x != 0 || shoot_dir.y != 0) {
+        player->source_angle = atan2f(shoot_dir.y, shoot_dir.x);
+    }
+
+    for (int i = 0; i < ARRAY_LEN(player->sources); i++) {
+        struct WeaponSource* source = &player->sources[i];
+        float source_angle = player->source_angle + source->offset;
+        source->pos = vector2_polar(10.0, source_angle);
+    }
 
     ent_move(state, player);
 

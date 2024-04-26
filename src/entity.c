@@ -15,6 +15,12 @@ void draw_ent(Entity* entity) {
     // TODO: entities can have multiple sprites parented to them, with an arbitrary offset
     // for now, entities just have the one sprite, and it has no offset
     draw_sprite(entity->sprite, entity->pos);
+
+    // draw occupied sources/sources the entity actually has
+    for (int i = 0; i < ARRAY_LEN(entity->sources); i++) {
+        if (!entity->sources[i].occupied) continue;
+        draw_sprite(entity->sources[i].sprite, Vector2Add(entity->pos, entity->sources->pos));
+    }
 }
 
 void draw_ent_debug(Entity* entity) {

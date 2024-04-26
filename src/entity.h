@@ -30,6 +30,16 @@ enum EntityKindFlag {
     KindBox = 2,
 };
 
+struct WeaponSource {
+    bool occupied;
+    float offset;
+    Vector2 pos;
+    float delay_timer;
+    float delay;
+
+    Sprite* sprite;
+};
+
 typedef struct Entity {
     union {
         Handle handle;
@@ -71,6 +81,9 @@ typedef struct Entity {
 
     int health;
     int max_health;
+
+    float source_angle;
+    struct WeaponSource sources[16];
 } Entity;
 
 GENARRAY_DEFINE(Entity, MAX_ENTITIES, ent)
