@@ -1,9 +1,9 @@
 #include <assert.h>
-#include <stdlib.h>
 #include "math.h"
 #include "dungeon.h"
 
 void* memset(void *dest, int val, size_t size);
+void qsort(void *base, size_t count, size_t size, int (*compare_func)(const void*, const void*));
 
 struct Vector2iStack {
     Vector2i stack[FLOOR_WIDTH * FLOOR_HEIGHT];
