@@ -6,7 +6,7 @@ DONE add game pausing & simple "PAUSED" overlay text
 DONE add interactable doors
 DONE remove "boxes" entity array prototype, replace with monolithic entity array
 DONE add BoI-style floor plan generation (BFS branch)
-TODO add weapon/source/thingie
+DONE add weapon/source/thingie
 TODO add sprite flipping to player based on direction of travel & shoot direction
 TODO add a basic linear bullet
 TODO add shooting to the player
