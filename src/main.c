@@ -110,10 +110,6 @@ int main(void) {
     game_data.target_dest.x = (GetRenderWidth() - game_data.target_dest.width) / 2;
     game_data.target_dest.y = (GetRenderHeight() - game_data.target_dest.height) / 2;
 
-    // setup some initial test data
-    // turns out doing `(GameState){0}` totally blows up the stack, since
-    // GameState has 8k entities lol
-    memset(game_data.current_state, 0, sizeof(GameState));
     game_data.current_state->game_data = &game_data;
     game_data.current_state->input_state = &game_data.input_state;
     ent_array_init(&game_data.current_state->entities);
