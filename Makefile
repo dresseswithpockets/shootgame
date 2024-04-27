@@ -10,7 +10,7 @@ LFLAGS=$(_EMPTY_)
 ifeq ($(OS),Windows_NT)
 	BINEXT := .exe
 	LIBS=-lraylib -lwinmm -lgdi32 -static
-	CFLAGS+=-Llib/windows
+	CFLAGS+=-Llib/windows-mingw-w64
 else
 	BINEXT := .x86_64
 	LIBS=-lraylib -lGL -lm -lpthread -ldl -lrt -lX11

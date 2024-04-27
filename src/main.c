@@ -6,12 +6,15 @@
 #include "sprite.h"
 
 #if defined(PLATFORM_WEB)
-    #include <emscripten/emscripten.h>
+#include <emscripten/emscripten.h>
 #endif
+
+// libc forward decl
+void* __cdecl memset(void* dest, int val, size_t size);
 
 const int render_width = 128, render_height = 128;
 
-void integrate_render_frame(void* game_data);
+void integrate_render_frame(void *user_data);
 
 void add_rolling_frame_time(double frame_time) {
     static double rolling_frame_time[100];
@@ -30,6 +33,7 @@ void add_rolling_frame_time(double frame_time) {
 #ifdef SG_USE_WINMAIN
 int WinMain(void* hInstance, void* hPrevInstance, char* lpCmdLine, int nCmdShow) {
 #else
+
 int main(void) {
 #endif
     SetTraceLogLevel(LOG_DEBUG);
@@ -47,42 +51,42 @@ int main(void) {
         .sheet = sprite_sheet,
         .sprite_wall = (Sprite) {
             .sprite_sheet = sprite_sheet,
-            .source = { 0, 8, 8, 8 },
-            .origin = { 0, 0 },
+            .source = {0, 8, 8, 8},
+            .origin = {0, 0},
         },
         .sprite_floor = (Sprite) {
             .sprite_sheet = sprite_sheet,
-            .source = { 8, 8, 8, 8 },
-            .origin = { 0, 0 },
+            .source = {8, 8, 8, 8},
+            .origin = {0, 0},
         },
         .sprite_player = (Sprite) {
             .sprite_sheet = sprite_sheet,
-            .source = { 72, 0, 16, 16 },
-            .origin = { 8, 8 },
+            .source = {72, 0, 16, 16},
+            .origin = {8, 8},
         },
         .sprite_box = (Sprite) {
             .sprite_sheet = sprite_sheet,
-            .source = { 8, 0, 8, 8 },
-            .origin = { 4, 4 },
+            .source = {8, 0, 8, 8},
+            .origin = {4, 4},
         },
         .sprite_door_normal = (Sprite) {
             .sprite_sheet = sprite_sheet,
-            .source = { 24, 8, 16, 8 },
-            .origin = { 8, 4 },
+            .source = {24, 8, 16, 8},
+            .origin = {8, 4},
         },
         .sprite_source = (Sprite) {
             .sprite_sheet = sprite_sheet,
             .source = { 120, 16, 5, 5 },
-            .origin = { 2.5, 2.5 },
+            .origin = { 2.6, 2.5 },
         },
     };
 
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
-    int scale = (int)(GetRenderHeight() / (float)render_height);
+    int scale = (int) (GetRenderHeight() / (float) render_height);
     GameData game_data = {
         .assets = &game_assets,
         .render_target = LoadRenderTexture(render_width, render_height),
-        .target_dest = { 0, 0, render_width * scale, render_height * scale },
+        .target_dest = {0, 0, render_width * scale, render_height * scale},
 
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
@@ -107,16 +111,18 @@ int main(void) {
     game_data.target_dest.y = (GetRenderHeight() - game_data.target_dest.height) / 2;
 
     // setup some initial test data
-    *game_data.current_state = (GameState){0};
+    // turns out doing `(GameState){0}` totally blows up the stack, since
+    // GameState has 8k entities lol
+    memset(game_data.current_state, 0, sizeof(GameState));
     game_data.current_state->game_data = &game_data;
     game_data.current_state->input_state = &game_data.input_state;
     ent_array_init(&game_data.current_state->entities);
     Entity new_player = {
         .kind_flags = KindPlayer,
-        .room_idx = { 2, 2 },
+        .room_idx = {2, 2},
 
-        .pos_pixel = (Vector2i){ 24, 24 },
-        .pos = (Vector2){ 24, 24 },
+        .pos_pixel = (Vector2i) {24, 24},
+        .pos = (Vector2) {24, 24},
 
         .normal_friction = 0.85,
         .normal_accel_time = 0.02, // 1 ticks
@@ -124,7 +130,7 @@ int main(void) {
 
         .sprite = &game_assets.sprite_player,
 
-        .c_size = { 8, 14 },
+        .c_size = {8, 14},
         .c_radius = 6,
         .c_pushes = true,
     };
@@ -136,14 +142,14 @@ int main(void) {
     for (int i = 0; i < 32; i++) {
         Entity new_box = {
             .kind_flags = KindBox,
-            .room_idx = { 2, 2 },
+            .room_idx = {2, 2},
 
-            .pos_pixel = (Vector2i){ GetRandomValue(40, 112), GetRandomValue(40, 112) },
+            .pos_pixel = (Vector2i) {GetRandomValue(40, 112), GetRandomValue(40, 112)},
             .normal_friction = 0.96,
 
             .sprite = &game_assets.sprite_box,
 
-            .c_size = { 8, 8 },
+            .c_size = {8, 8},
             .c_radius = 3,
             .c_pushes = true,
         };
@@ -151,9 +157,9 @@ int main(void) {
         ent_array_insert(&game_data.current_state->entities, new_box);
     }
     // start player at center of room
-    game_data.current_state->room_idx = (Vector2i) { 2, 2 };
+    game_data.current_state->room_idx = (Vector2i) {2, 2};
     // generate initial floor plan. If it fails, try again, until it succeeds
-    while (!floor_plan_generate(&game_data.current_state->floor_plan, 1)) ;
+    while (!floor_plan_generate(&game_data.current_state->floor_plan, 1));
 
     // this method of deep copying requires that the game state hold no pointers with state lifetimes
     // e.g. InputState and GameData have lifetimes beyond the state's lifetime, and its expected
@@ -181,8 +187,8 @@ int main(void) {
     return 0;
 }
 
-void integrate_render_frame(void* user_data) {
-    GameData* game_data = user_data;
+void integrate_render_frame(void *user_data) {
+    GameData *game_data = user_data;
     // gafferongames fixed timestep
     static double frame_accumulator = 0.0;
 
@@ -220,9 +226,9 @@ void integrate_render_frame(void* user_data) {
     DrawTexturePro(
         game_data->render_target.texture,
         // negative render height because funny opengl render target coordinates
-        (Rectangle){ 0, 0, render_width, -render_height },
+        (Rectangle) {0, 0, render_width, -render_height},
         game_data->target_dest,
-        (Vector2){0, 0},
+        (Vector2) {0, 0},
         0.0f,
         WHITE);
 

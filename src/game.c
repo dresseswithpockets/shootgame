@@ -1,4 +1,3 @@
-#include <assert.h>
 #include "entity.h"
 #include "game.h"
 #include "input.h"
@@ -47,7 +46,12 @@ void integrate_player(GameState* state, Entity* player) {
 
     // updating weapon source angle & positions
     if (shoot_dir.x != 0 || shoot_dir.y != 0) {
-        player->source_angle = atan2f(shoot_dir.y, shoot_dir.x);
+        //player->source_angle = move_towards(player->source_angle, atan2f(shoot_dir.y, shoot_dir.x), 2 * PI * state->game_data->dt);
+        player->source_angle = smoothdamp_angle(
+            player->source_angle,
+            atan2f(shoot_dir.y, shoot_dir.x),
+            10.0f,
+            (float)state->game_data->dt);
     }
 
     for (int i = 0; i < ARRAY_LEN(player->sources); i++) {

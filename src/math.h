@@ -2,8 +2,7 @@
 
 #include <limits.h>
 
-// forward decl to avoid including stdlib math.h
-float fmodf(float x, float y);
+DLLIMPORT float __cdecl fmodf(float x, float y);
 
 typedef struct Vector2i {
     int x;
@@ -39,6 +38,31 @@ static inline Vector2 vector2_polar(float length, float theta) {
 
 static inline float rand_float(float min, float max) {
     return ((float)GetRandomValue(0, INT_MAX)/(float)(INT_MAX)) * (max - min) + min;
+}
+
+static inline float smoothdamp(float from, float to, float lambda, float dt)
+{
+    return Lerp(from, to, 1.0f - expf(-lambda * dt));
+}
+
+static inline float short_angle_dist(float from, float to) {
+    float max_angle = PI * 2;
+    float difference = fmodf(to - from, max_angle);
+    return fmodf(2 * difference, max_angle) - difference;
+}
+
+static inline float smoothdamp_angle(float from, float to, float lambda, float dt) {
+    return smoothdamp(from, from + short_angle_dist(from, to), lambda, dt);
+}
+
+static inline float lerp_angle(float from, float to, float t) {
+    return from + short_angle_dist(from, to) * t;
+}
+
+static inline float move_towards(float value, float to, float max) {
+    if (fabsf(to - value) <= max) return to;
+    if (to < value) return value - max;
+    return value + max;
 }
 
 static inline int signi(float x) {

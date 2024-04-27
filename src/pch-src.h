@@ -4,3 +4,9 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
+
+#ifdef _MSC_VER
+#define DLLIMPORT __declspec(dllimport)
+#else
+#define DLLIMPORT
+#endif
