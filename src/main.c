@@ -91,7 +91,7 @@ int main(void) {
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
 
-        .debug = false,
+        .debug = true,
         .t = 0,
         .dt = 1.0 / 50.0,
         .current_time = GetTime(),

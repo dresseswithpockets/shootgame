@@ -6,7 +6,13 @@
 
 // since entities are shared across rooms, we have a pretty large limit. in practice, this can
 // probably be way lower. I will have to do some testing to see what the reasonable limit is.
-#define MAX_ENTITIES 8192
+// N.B. estimated an approximate entities limit:
+//  assuming up to 20 enemies per room
+//  assuming up to 20 items per room (this is insane, it would only ever be like this if the player did it on purpose)
+//  assuming up to 256 bullets at once (this is also insane, i dont think we'd ever get here)
+//  tiles arent entities, so arent counted here
+//  20*20 + 20*20 + 256 = 1056
+#define MAX_ENTITIES 1152
 
 // game.h forward decls
 typedef struct GameData GameData;
