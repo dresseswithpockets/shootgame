@@ -14,7 +14,7 @@ Vector2 get_world_radial_center(const Entity* entity) {
 void draw_ent(Entity* entity) {
     // TODO: entities can have multiple sprites parented to them, with an arbitrary offset
     // for now, entities just have the one sprite, and it has no offset
-    draw_sprite(entity->sprite, entity->pos);
+    draw_sprite_ex(entity->sprite, entity->pos, 0.0, WHITE, entity->flip_x, entity->flip_y);
 
     // draw occupied sources/sources the entity actually has
     for (int i = 0; i < ARRAY_LEN(entity->sources); i++) {

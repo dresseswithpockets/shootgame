@@ -8,7 +8,9 @@ typedef struct Assets {
     Texture2D sheet;
     Sprite sprite_wall;
     Sprite sprite_floor;
-    Sprite sprite_player;
+    Sprite sprite_player_down;
+    Sprite sprite_player_left;
+    Sprite sprite_player_up;
     Sprite sprite_box;
     Sprite sprite_door_normal;
     Sprite sprite_source;

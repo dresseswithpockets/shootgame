@@ -75,6 +75,8 @@ typedef struct Entity {
     float normal_max_speed;
 
     Sprite* sprite;
+    bool flip_x;
+    bool flip_y;
 
     // AABB collision info used for collisions with tiles, units are in cells
     Vector2i c_size;

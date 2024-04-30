@@ -12,14 +12,40 @@ void update_input_state(GameData* game_data) {
 }
 
 void integrate_player(GameState* state, Entity* player) {
+    Vector2 flip_dir = (Vector2){ 0, 0 };
+
     Vector2 wish_dir = (Vector2){ state->input_state->move_horizontal.value, state->input_state->move_vertical.value };
     if (wish_dir.x != 0 || wish_dir.y != 0) {
         wish_dir = Vector2Normalize(wish_dir);
+        flip_dir = wish_dir;
     }
 
     Vector2 shoot_dir = (Vector2){ state->input_state->shoot_horizontal.value, state->input_state->shoot_vertical.value };
-    if (shoot_dir.x != 0 || wish_dir.y != 0) {
+    if (shoot_dir.x != 0 || shoot_dir.y != 0) {
         shoot_dir = Vector2Normalize(shoot_dir);
+        flip_dir = shoot_dir;
+    }
+
+    if (flip_dir.x != 0 || flip_dir.y != 0) {
+        if (flip_dir.y < 0) {
+            player->sprite = &state->game_data->assets->sprite_player_up;
+            player->flip_x = false;
+            player->flip_y = false;
+        } else if (flip_dir.y > 0) {
+            player->sprite = &state->game_data->assets->sprite_player_down;
+            player->flip_x = false;
+            player->flip_y = false;
+        }
+
+        if (flip_dir.x < 0) {
+            player->sprite = &state->game_data->assets->sprite_player_left;
+            player->flip_x = false;
+            player->flip_y = false;
+        } else if (flip_dir.x > 0) {
+            player->sprite = &state->game_data->assets->sprite_player_left;
+            player->flip_x = true;
+            player->flip_y = false;
+        }
     }
 
     // NOTE(snale): honestly im not sure if this approach feels good, and using accelleration and

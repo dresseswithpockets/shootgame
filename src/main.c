@@ -59,9 +59,19 @@ int main(void) {
             .source = {8, 8, 8, 8},
             .origin = {0, 0},
         },
-        .sprite_player = (Sprite) {
+        .sprite_player_down = (Sprite) {
             .sprite_sheet = sprite_sheet,
             .source = {72, 0, 16, 16},
+            .origin = {8, 8},
+        },
+        .sprite_player_left = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = {88, 0, 16, 16},
+            .origin = {8, 8},
+        },
+        .sprite_player_up = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = {104, 0, 16, 16},
             .origin = {8, 8},
         },
         .sprite_box = (Sprite) {
@@ -124,7 +134,7 @@ int main(void) {
         .normal_accel_time = 0.02, // 1 ticks
         .normal_max_speed = 64.0, // pixels per second
 
-        .sprite = &game_assets.sprite_player,
+        .sprite = &game_assets.sprite_player_down,
 
         .c_size = {8, 14},
         .c_radius = 6,
