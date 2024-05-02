@@ -14,6 +14,9 @@ typedef struct Assets {
     Sprite sprite_box;
     Sprite sprite_door_normal;
     Sprite sprite_source;
+    Sprite sprite_bullet_up;
+    Sprite sprite_bullet_left;
+    Sprite sprite_bullet_diag;
 } Assets;
 
 typedef struct GameState GameState;

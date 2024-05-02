@@ -25,9 +25,11 @@ T* prefix##_array_get(struct T##Array* array, Handle handle);           \
 Handle prefix##_array_insert_new(struct T##Array* array);               \
 Handle prefix##_array_insert(struct T##Array* array, T value);          \
 void prefix##_array_remove(struct T##Array* array, Handle handle);      \
+void prefix##_array_copy_into(struct T##Array* array, T* value);
 
 #define GENARRAY_IMPL(T, capacity, prefix)                              \
-void prefix##_array_init(T##Array* array) {                             \
+void prefix##_array_init(struct T##Array* array) {                      \
+    array->free_head = 0;                                               \
     for (int i = 0; i < (capacity) - 1; i++) {                          \
         array->data[i].next_free = i + 1;                               \
     }                                                                   \
@@ -39,10 +41,10 @@ T* prefix##_array_get(EntityArray* array, Handle handle) {              \
     }                                                                   \
     return 0; /* TODO: nullptr? */                                      \
 }                                                                       \
-Handle prefix##_array_insert_new(T##Array* array) {                     \
+Handle prefix##_array_insert_new(struct T##Array* array) {              \
     return ent_array_insert(array, (Entity) {0});                       \
 }                                                                       \
-Handle prefix##_array_insert(T##Array* array, T value) {                \
+Handle prefix##_array_insert(struct T##Array* array, T value) {         \
     struct T##ArrayEntry* entry = &array->data[array->free_head];       \
     assert(!entry->occupied && "Entry at the free_head is occupied");   \
     Handle handle = {                                                   \
@@ -55,7 +57,7 @@ Handle prefix##_array_insert(T##Array* array, T value) {                \
     entry->value = value;                                               \
     return handle;                                                      \
 }                                                                       \
-void prefix##_array_remove(T##Array* array, Handle handle) {            \
+void prefix##_array_remove(struct T##Array* array, Handle handle) {     \
     struct EntityArrayEntry* entry = &array->data[handle.index];        \
     if (entry->occupied) {                                              \
         if (entry->generation != handle.generation) {                   \
@@ -68,4 +70,9 @@ void prefix##_array_remove(T##Array* array, Handle handle) {            \
     }                                                                   \
     /* if entry->occupied is false, caller is trying to remove an */    \
     /* already-removed key, do nothing */                               \
+}                                                                       \
+void prefix##_array_copy_into(struct T##Array* array, T* value) {       \
+    Handle handle = value->handle;                                      \
+    array->data[handle.index].occupied = true;                          \
+    array->data[handle.index].value = *value;                           \
 }

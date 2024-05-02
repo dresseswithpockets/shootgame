@@ -14,7 +14,7 @@ Vector2 get_world_radial_center(const Entity* entity) {
 void draw_ent(Entity* entity) {
     // TODO: entities can have multiple sprites parented to them, with an arbitrary offset
     // for now, entities just have the one sprite, and it has no offset
-    draw_sprite_ex(entity->sprite, entity->pos, 0.0, WHITE, entity->flip_x, entity->flip_y);
+    draw_sprite_ex(entity->sprite, entity->pos, entity->s_rotation, WHITE, entity->flip_x, entity->flip_y);
 
     // draw occupied sources/sources the entity actually has
     for (int i = 0; i < ARRAY_LEN(entity->sources); i++) {
@@ -73,6 +73,10 @@ void ent_repel_ent(Entity* self, Entity* other) {
     }
 }
 
+void ent_bullet_test(Entity* bullet, Entity* other) {
+    // TODO:
+}
+
 void ent_move(GameState* state, Entity* entity) {
     // horizontal movement
     entity->pos_subpixel = Vector2Add(entity->pos_subpixel, Vector2Scale(entity->velocity, state->game_data->dt));
@@ -80,7 +84,7 @@ void ent_move(GameState* state, Entity* entity) {
 
     entity->c_flags = 0;
     while (entity->pos_subpixel.x >= 1) {
-        if (pixel_has_collision(entity->pos_pixel.x + (entity->c_size.x / 2) + 1, entity->pos_pixel.y)) {
+        if (entity->c_collide_world && pixel_has_collision(entity->pos_pixel.x + (entity->c_size.x / 2) + 1, entity->pos_pixel.y)) {
             entity->pos_subpixel.x = 0.99;
             entity->velocity.x = 0;
             entity->c_flags |= CollisionFlagRight;
@@ -90,7 +94,7 @@ void ent_move(GameState* state, Entity* entity) {
         }
     }
     while (entity->pos_subpixel.x < 0) {
-        if (pixel_has_collision(entity->pos_pixel.x - (entity->c_size.x / 2) - 1, entity->pos_pixel.y)) {
+        if (entity->c_collide_world && pixel_has_collision(entity->pos_pixel.x - (entity->c_size.x / 2) - 1, entity->pos_pixel.y)) {
             entity->pos_subpixel.x = 0;
             entity->velocity.x = 0;
             entity->c_flags |= CollisionFlagLeft;
@@ -101,7 +105,7 @@ void ent_move(GameState* state, Entity* entity) {
     }
 
     while (entity->pos_subpixel.y >= 1) {
-        if (pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y + (entity->c_size.y / 2) + 1)) {
+        if (entity->c_collide_world && pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y + (entity->c_size.y / 2) + 1)) {
             entity->pos_subpixel.y = 0.99;
             entity->velocity.y = 0;
             entity->c_flags |= CollisionFlagDown;
@@ -111,7 +115,7 @@ void ent_move(GameState* state, Entity* entity) {
         }
     }
     while (entity->pos_subpixel.y < 0) {
-        if (pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y - (entity->c_size.y / 2) - 1)) {
+        if (entity->c_collide_world && pixel_has_collision(entity->pos_pixel.x, entity->pos_pixel.y - (entity->c_size.y / 2) - 1)) {
             entity->pos_subpixel.y = 0;
             entity->velocity.y = 0;
             entity->c_flags |= CollisionFlagUp;
@@ -122,4 +126,76 @@ void ent_move(GameState* state, Entity* entity) {
     }
 
     entity->pos = Vector2Add(v2itof(entity->pos_pixel), entity->pos_subpixel);
+}
+
+void ent_init_player(Entity* entity, Assets* assets, Vector2i room_idx) {
+    *entity = (Entity) {
+        .handle = entity->handle,
+
+        .kind_flags = KindPlayer,
+        .room_idx = room_idx,
+
+        .pos_pixel = (Vector2i) {24, 24},
+        .pos = (Vector2) {24, 24},
+
+        .normal_friction = 0.85,
+        .normal_accel_time = 0.02, // 1 ticks
+        .normal_max_speed = 64.0, // pixels per second
+
+        .sprite = &assets->sprite_player_down,
+
+        .c_collide_world = true,
+        .c_size = {8, 14},
+        .c_radius = 6,
+        .c_pushes = true,
+    };
+    entity->sources[0] = (struct WeaponSource) {
+        .occupied = true,
+        .sprite = &assets->sprite_source,
+        .delay = 0.5,
+    };
+}
+
+void ent_init_box(Entity* entity, Assets* assets, Vector2i room_idx) {
+    Vector2i pos_pixel = (Vector2i) {GetRandomValue(40, 112), GetRandomValue(40, 112)};
+    *entity = (Entity) {
+        .handle = entity->handle,
+
+        .kind_flags = KindBox,
+        .room_idx = room_idx,
+
+        .pos_pixel = pos_pixel,
+        .pos = v2itof(pos_pixel),
+        .normal_friction = 0.96,
+
+        .sprite = &assets->sprite_box,
+
+        .c_collide_world = true,
+        .c_size = {8, 8},
+        .c_radius = 3,
+        .c_pushes = true,
+    };
+}
+
+void ent_init_bullet(Entity* entity, Assets* assets, Vector2i room_idx, Vector2 pos, Vector2 dir) {
+    *entity = (Entity) {
+        .handle = entity->handle,
+
+        .kind_flags = KindBullet,
+        .room_idx = room_idx,
+
+        .pos_pixel = v2ftoi(pos),
+        .pos_subpixel = vector2_subpixel(pos),
+        .pos = pos,
+
+        .velocity = Vector2Scale(dir, 64),
+        .normal_friction = 1.0,
+
+        .sprite = &assets->sprite_bullet_up,
+
+        .c_collide_world = false,
+        .c_size = { 2, 2 },
+        .c_radius = 2,
+        .c_pushes = false,
+    };
 }

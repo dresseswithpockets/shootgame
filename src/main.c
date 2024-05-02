@@ -40,7 +40,7 @@ int main(void) {
 
 // setting VSYNC on desktop/non-web platforms
 #if !defined(PLATFORM_WEB)
-    SetConfigFlags(FLAG_VSYNC_HINT);
+    //SetConfigFlags(FLAG_VSYNC_HINT);
 #endif
 
     InitWindow(1280, 720, "bwuh");
@@ -89,6 +89,21 @@ int main(void) {
             .source = { 120, 16, 5, 5 },
             .origin = { 2.6, 2.5 },
         },
+        .sprite_bullet_up = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 1, 24, 6, 8 },
+            .origin = { 2.5, 2.5 },
+        },
+        .sprite_bullet_left = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 8, 24, 8, 6 },
+            .origin = { 2.5, 2.5 },
+        },
+        .sprite_bullet_diag = (Sprite) {
+            .sprite_sheet = sprite_sheet,
+            .source = { 16, 24, 8, 8 },
+            .origin = { 3.5, 3.5 },
+        },
     };
 
     // assuming 16:9 aspect for now, calculate the integer scaling for our render texture
@@ -101,7 +116,7 @@ int main(void) {
         .previous_state = MemAlloc(sizeof(GameState)),
         .current_state = MemAlloc(sizeof(GameState)),
 
-        .debug = true,
+        .debug = false,
         .t = 0,
         .dt = 1.0 / 50.0,
         .current_time = GetTime(),
@@ -122,48 +137,26 @@ int main(void) {
 
     game_data.current_state->game_data = &game_data;
     game_data.current_state->input_state = &game_data.input_state;
-    ent_array_init(&game_data.current_state->entities);
-    Entity new_player = {
-        .kind_flags = KindPlayer,
-        .room_idx = {2, 2},
-
-        .pos_pixel = (Vector2i) {24, 24},
-        .pos = (Vector2) {24, 24},
-
-        .normal_friction = 0.85,
-        .normal_accel_time = 0.02, // 1 ticks
-        .normal_max_speed = 64.0, // pixels per second
-
-        .sprite = &game_assets.sprite_player_down,
-
-        .c_size = {8, 14},
-        .c_radius = 6,
-        .c_pushes = true,
-    };
-    new_player.sources[0] = (struct WeaponSource) {
-        .occupied = true,
-        .sprite = &game_assets.sprite_source,
-    };
-    ent_array_insert(&game_data.current_state->entities, new_player);
-    for (int i = 0; i < 32; i++) {
-        Entity new_box = {
-            .kind_flags = KindBox,
-            .room_idx = {2, 2},
-
-            .pos_pixel = (Vector2i) {GetRandomValue(40, 112), GetRandomValue(40, 112)},
-            .normal_friction = 0.96,
-
-            .sprite = &game_assets.sprite_box,
-
-            .c_size = {8, 8},
-            .c_radius = 3,
-            .c_pushes = true,
-        };
-        new_box.pos = v2itof(new_box.pos_pixel);
-        ent_array_insert(&game_data.current_state->entities, new_box);
-    }
-    // start player at center of room
     game_data.current_state->room_idx = (Vector2i) {2, 2};
+
+    ent_array_init(&game_data.current_state->entities);
+
+    // setup player at center room
+    {
+        Handle new_player_handle = ent_array_insert_new(&game_data.current_state->entities);
+        Entity* player = ent_array_get(&game_data.current_state->entities, new_player_handle);
+        ent_init_player(player, game_data.assets, game_data.current_state->room_idx);
+    }
+
+    // setup test pushable boxes
+    {
+        for (int i = 0; i < 16; i++) {
+            Handle new_box_handle = ent_array_insert_new(&game_data.current_state->entities);
+            Entity* box = ent_array_get(&game_data.current_state->entities, new_box_handle);
+            ent_init_box(box, game_data.assets, game_data.current_state->room_idx);
+        }
+    }
+
     // generate initial floor plan. If it fails, try again, until it succeeds
     while (!floor_plan_generate(&game_data.current_state->floor_plan, 1));
 
@@ -179,7 +172,8 @@ int main(void) {
     emscripten_set_main_loop_arg(integrate_render_frame, &game_data, 0, 1);
 #else
     // just in case vsync doesnt work, we'll set the target FPS to the current monitor's refresh rate + 1
-    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()) + 1);
+    //SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()) + 1);
+    SetTargetFPS(60);
 
     while (!WindowShouldClose())
         integrate_render_frame(&game_data);

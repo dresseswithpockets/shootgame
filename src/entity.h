@@ -17,6 +17,7 @@
 // game.h forward decls
 typedef struct GameData GameData;
 typedef struct GameState GameState;
+typedef struct Assets Assets;
 
 #define CELL_SIZE 8
 
@@ -33,7 +34,8 @@ enum CollisionFlag {
 enum EntityKindFlag {
     KindNone = 0,
     KindPlayer = 1,
-    KindBox = 2,
+    KindBox = 1 << 2,
+    KindBullet = 1 << 3,
 };
 
 struct WeaponSource {
@@ -74,11 +76,14 @@ typedef struct Entity {
     // max running speed, entities will accelerate up to this speed
     float normal_max_speed;
 
+    // rendering
     Sprite* sprite;
+    float s_rotation;
     bool flip_x;
     bool flip_y;
 
     // AABB collision info used for collisions with tiles, units are in cells
+    bool c_collide_world;
     Vector2i c_size;
     enum CollisionFlag c_flags;
 
@@ -87,9 +92,11 @@ typedef struct Entity {
     float c_radius;
     bool c_pushes;
 
+    // health & damage
     int health;
     int max_health;
 
+    // shooting
     float source_angle;
     struct WeaponSource sources[16];
 } Entity;
@@ -117,6 +124,11 @@ void draw_ent(Entity* entity);
 void draw_ent_debug(Entity* entity);
 void ent_move(GameState* state, Entity* entity);
 void ent_repel_ent(Entity* self, Entity* other);
+void ent_bullet_test(Entity* bullet, Entity* other);
+
+void ent_init_player(Entity* entity, Assets* assets, Vector2i room_idx);
+void ent_init_box(Entity* entity, Assets* assets, Vector2i room_idx);
+void ent_init_bullet(Entity* entity, Assets* assets, Vector2i room_idx, Vector2 pos, Vector2 dir);
 
 // enumerate each occupied entry in an EntityArray - assumes that genarrays are always fully initialized to their max capacity
 #define ENT_ARRAY_FOREACH(arr, iter) for (struct EntityArrayEntry* iter = &(arr).data[0]; iter != &(arr).data[MAX_ENTITIES-1]; iter++) if (iter->occupied)

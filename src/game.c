@@ -21,7 +21,8 @@ void integrate_player(GameState* state, Entity* player) {
     }
 
     Vector2 shoot_dir = (Vector2){ state->input_state->shoot_horizontal.value, state->input_state->shoot_vertical.value };
-    if (shoot_dir.x != 0 || shoot_dir.y != 0) {
+    bool should_shoot = shoot_dir.x != 0 || shoot_dir.y != 0;
+    if (should_shoot) {
         shoot_dir = Vector2Normalize(shoot_dir);
         flip_dir = shoot_dir;
     }
@@ -71,8 +72,7 @@ void integrate_player(GameState* state, Entity* player) {
     state->previously_moving_diag = wish_dir.x != 0 && wish_dir.y != 0;
 
     // updating weapon source angle & positions
-    if (shoot_dir.x != 0 || shoot_dir.y != 0) {
-        //player->source_angle = move_towards(player->source_angle, atan2f(shoot_dir.y, shoot_dir.x), 2 * PI * state->game_data->dt);
+    if (should_shoot) {
         player->source_angle = smoothdamp_angle(
             player->source_angle,
             atan2f(shoot_dir.y, shoot_dir.x),
@@ -82,8 +82,28 @@ void integrate_player(GameState* state, Entity* player) {
 
     for (int i = 0; i < ARRAY_LEN(player->sources); i++) {
         struct WeaponSource* source = &player->sources[i];
+        // only process weapon sources that actually exists on the entity
+        if (!source->occupied) continue;
+
         float source_angle = player->source_angle + source->offset;
         source->pos = vector2_polar(10.0, source_angle);
+
+        // process the source's timer
+        if (source->delay_timer > 0) {
+            source->delay_timer -= state->game_data->dt;
+        }
+
+        // spawn bullets at each weapon source
+        if (should_shoot && source->delay_timer <= 0) {
+            Handle new_bullet_handle = ent_array_insert_new(&state->entities);
+            Entity* new_bullet = ent_array_get(&state->entities, new_bullet_handle);
+
+            Vector2 new_pos = Vector2Add(player->pos, source->pos);
+            Vector2 new_dir = Vector2Normalize(source->pos);
+            ent_init_bullet(new_bullet, state->game_data->assets, player->room_idx, new_pos, new_dir);
+
+            source->delay_timer = source->delay;
+        }
     }
 
     ent_move(state, player);
@@ -114,6 +134,68 @@ void integrate_player(GameState* state, Entity* player) {
     }
 }
 
+void integrate_bullet(GameState* state, Entity* bullet) {
+    ent_move(state, bullet);
+
+    // TODO: figure out silly rotations guh
+
+    // range: [0, 2*PI)
+    Vector2 dir = Vector2Normalize(bullet->velocity);
+    float angle = atan2f(dir.y, dir.x);
+    if (angle < 0) {
+        angle = 2 * PI - fmodf(angle, 2 * PI);
+    }
+    angle = fmodf(angle, (2 * PI)) / (2 * PI);
+    // new range: [0.0625, 1.0625)
+    angle = angle + 0.0625;
+    // new range: [0, 8]
+    int index = (int)floorf(angle * 8);
+
+    switch (index) {
+    case 0:
+    case 8:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_left;
+        bullet->flip_x = true;
+        bullet->flip_y = false;
+        break;
+    case 1:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_diag;
+        bullet->flip_x = true;
+        bullet->flip_y = false;
+        break;
+    case 2:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_up;
+        bullet->flip_x = false;
+        bullet->flip_y = false;
+        break;
+    case 3:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_diag;
+        bullet->flip_x = false;
+        bullet->flip_y = false;
+        break;
+    case 4:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_left;
+        bullet->flip_x = false;
+        bullet->flip_y = false;
+        break;
+    case 5:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_diag;
+        bullet->flip_x = false;
+        bullet->flip_y = true;
+        break;
+    case 6:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_up;
+        bullet->flip_x = false;
+        bullet->flip_y = true;
+        break;
+    case 7:
+        bullet->sprite = &state->game_data->assets->sprite_bullet_diag;
+        bullet->flip_x = true;
+        bullet->flip_y = true;
+        break;
+    }
+}
+
 void integrate_state(GameState* state) {
     if (state->input_state->pause.is_down && state->input_state->pause.this_frame) {
         state->paused = !state->paused;
@@ -121,19 +203,21 @@ void integrate_state(GameState* state) {
 
     if (state->paused) return;
 
-    // example entity pushing
     ENT_ARRAY_FOREACH_INROOM(state->entities, entry_a, state->room_idx) {
         Entity* entity = &entry_a->value;
         ENT_ARRAY_FOREACH_INROOM(state->entities, entry_b, state->room_idx) {
             if (entry_a == entry_b) continue;
             ent_repel_ent(entity, &entry_b->value);
+            ent_bullet_test(entity, &entry_b->value);
         }
     }
 
     ENT_ARRAY_FOREACH_INROOM(state->entities, entry, state->room_idx) {
-        if (HAS_FLAG(entry->value.kind_flags, KindPlayer)) {
+        if (entry->value.kind_flags & KindPlayer) {
             integrate_player(state, &entry->value);
-        } else if (HAS_FLAG(entry->value.kind_flags, KindBox)) {
+        } else if (entry->value.kind_flags & KindBullet) {
+            integrate_bullet(state, &entry->value);
+        } else if (entry->value.kind_flags & KindBox) {
             ent_move(state, &entry->value);
         }
     }
@@ -168,8 +252,13 @@ void interpolate_state(GameState* previous, GameState* current, double alpha) {
     ENT_ARRAY_FOREACH_INROOM(current->entities, entry, current->room_idx) {
         Entity* current_ent = &entry->value;
         Entity* previous_ent = ent_array_get(&previous->entities, current_ent->handle);
+        // if the entity exists in both the current state and the previous state, then we can
+        // easily interpolate between the two states; otherwise, we just copy the new entity
+        // into the old entity and use that for rendering instead.
         if (previous_ent) {
             interpolate_entity(previous_ent, current_ent, alpha);
+        } else {
+            ent_array_copy_into(&previous->entities, current_ent);
         }
     }
 

@@ -20,6 +20,11 @@ static inline Vector2i v2ftoi(Vector2 vector) {
     return (Vector2i) {(int)vector.x, (int)vector.y};
 }
 
+static inline Vector2 vector2_subpixel(Vector2 pos) {
+    double integral;
+    return (Vector2) { modf(pos.x, &integral), modf(pos.y, &integral) };
+}
+
 static inline Vector2i vector2i_lerp(Vector2i a, Vector2i b, float t) {
     return v2ftoi(Vector2Lerp(v2itof(a), v2itof(b), t));
 }
