@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://bu8bdchqtgdvj"]
+
+[ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="1_fyetn"]
+[ext_resource type="Script" path="res://demobox/simple_body.gd" id="1_ub0cw"]
+[ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="2_b7w82"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6w1kp"]
+size = Vector2(4, 4)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_l28ru"]
+radius = 2.0
+
+[node name="Demobox" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_ub0cw")
+damp_speed = 50.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6w1kp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_fyetn")
+region_enabled = true
+region_rect = Rect2(0, 0, 8, 8)
+
+[node name="Repel" parent="." instance=ExtResource("2_b7w82")]
+
+[node name="CollisionShape2D" parent="Repel" index="0"]
+shape = SubResource("CircleShape2D_l28ru")
+
+[editable path="Repel"]
