@@ -13,7 +13,7 @@ collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_mifob")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_awofx")
 region_enabled = true
 region_rect = Rect2(72, 0, 16, 16)

@@ -6,7 +6,6 @@ class_name SimpleBody
 var _repel_amount: Vector2 = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
-
     velocity = velocity.move_toward(Vector2.ZERO, damp_speed * delta)
     velocity += _repel_amount
     move_and_slide()

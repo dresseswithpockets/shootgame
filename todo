@@ -8,6 +8,7 @@ DONE remove "boxes" entity array prototype, replace with monolithic entity array
 DONE add BoI-style floor plan generation (BFS branch)
 DONE add weapon/source/thingie
 DONE add sprite flipping to player based on direction of travel & shoot direction
+TODO move repel-overlap-loop outside of Repel script and into a script with higher priority, so that all repel's occur in the same frame
 TODO add a basic linear bullet
 TODO add shooting to the player
 TODO add health & damage to the player
