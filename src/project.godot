@@ -15,6 +15,10 @@ run/main_scene="res://main/main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*res://main/global.gd"
+
 [display]
 
 window/snap/snap_2d_transforms_to_pixel=false
@@ -73,6 +77,7 @@ shoot_right={
 2d_physics/layer_2="player"
 2d_physics/layer_3="repellers"
 2d_physics/layer_4="box"
+2d_physics/layer_5="doors"
 
 [rendering]
 

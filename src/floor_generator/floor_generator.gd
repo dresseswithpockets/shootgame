@@ -5,6 +5,8 @@ const FLOOR_WIDTH: int = 9
 const FLOOR_HEIGHT: int = 9
 const FLOOR_CENTER := Vector2i(4, 4)
 
+signal floor_generated(rooms: Array[Array])
+
 @export var floor_depth_factor: float = 3.33
 @export var min_rand_bound: int = 4
 @export var max_rand_bound: int = 5
@@ -13,9 +15,21 @@ const FLOOR_CENTER := Vector2i(4, 4)
 @onready var room_prefab: PackedScene = preload("res://room/room.tscn")
 
 var current_floor_plan: FloorPlan
+var rooms: Array[Array] = []
 
 func _ready():
+    self.rooms = []
+    for x in range(FLOOR_WIDTH):
+        var col = []
+        for y in range(FLOOR_HEIGHT):
+            col.append(null)
+        self.rooms.append(col)
     generate_floor(1)
+
+func clear_rooms():
+    for x in range(FLOOR_WIDTH):
+        for y in range(FLOOR_HEIGHT):
+            self.rooms[x][y] = null
 
 func compare_distance_to_center(a: Vector2i, b: Vector2i) -> int:
     var centerf := Vector2(FLOOR_CENTER)
@@ -30,12 +44,11 @@ func compare_distance_to_center(a: Vector2i, b: Vector2i) -> int:
 func generate_floor(floor_depth: int) -> void:
     for child in get_children():
         remove_child(child)
+    
+    clear_rooms()
 
     while !generate_floor_plan(1):
         pass
-    #current_floor_plan = FloorPlan.new()
-    #current_floor_plan.rooms[FLOOR_CENTER.x][FLOOR_CENTER.y] = true
-    #current_floor_plan.rooms[FLOOR_CENTER.x + 1][FLOOR_CENTER.y] = true
 
     var room_neighbors: Array[Vector2i] = []
     for x in range(FLOOR_WIDTH):
@@ -44,23 +57,27 @@ func generate_floor(floor_depth: int) -> void:
                 continue
 
             var room: Room = room_prefab.instantiate()
+            rooms[x][y] = room
             room.cell = Vector2i(x, y)
-            
-            var is_center = FLOOR_CENTER.x == x and FLOOR_CENTER.y == y
             room.name = "Room%d%d" % [x, y]
-            room.set_process(is_center)
-            room.set_physics_process(is_center)
-            room.visible = is_center
+            
+            if FLOOR_CENTER.x == x and FLOOR_CENTER.y == y:
+                room.enable()
+            else:
+                room.disable()
+                
             add_child(room)
             
             if current_floor_plan.has_room_at(Vector2i(x - 1, y)):
-                room.set_west()
+                room.set_door(Room.WEST, Room.DOOR_NORMAL)
             if current_floor_plan.has_room_at(Vector2i(x + 1, y)):
-                room.set_east()
+                room.set_door(Room.EAST, Room.DOOR_NORMAL)
             if current_floor_plan.has_room_at(Vector2i(x, y - 1)):
-                room.set_north()
+                room.set_door(Room.NORTH, Room.DOOR_NORMAL)
             if current_floor_plan.has_room_at(Vector2i(x, y + 1)):
-                room.set_south()
+                room.set_door(Room.SOUTH, Room.DOOR_NORMAL)
+    
+    floor_generated.emit(rooms)
 
 func generate_floor_plan(floor_depth: int) -> bool:
     current_floor_plan = FloorPlan.new()
