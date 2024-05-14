@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="2_2qucw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_41db3"]
+radius = 2.23607
 
 [node name="LinearBullet" type="Node2D"]
 script = ExtResource("1_5bkqs")
@@ -15,7 +16,7 @@ region_rect = Rect2(1, 24, 5, 8)
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 32
-collision_mask = 64
+collision_mask = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_41db3")

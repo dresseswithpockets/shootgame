@@ -30,7 +30,7 @@ navigation_enabled = false
 
 [node name="NorthTrigger" type="Area2D" parent="."]
 position = Vector2(0, -60)
-collision_layer = 256
+collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NorthTrigger"]
@@ -38,7 +38,7 @@ shape = SubResource("RectangleShape2D_20elf")
 
 [node name="SouthTrigger" type="Area2D" parent="."]
 position = Vector2(0, 60)
-collision_layer = 256
+collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SouthTrigger"]
@@ -46,7 +46,7 @@ shape = SubResource("RectangleShape2D_bues4")
 
 [node name="WestTrigger" type="Area2D" parent="."]
 position = Vector2(-60, 0)
-collision_layer = 256
+collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WestTrigger"]
@@ -54,7 +54,7 @@ shape = SubResource("RectangleShape2D_ts4iu")
 
 [node name="EastTrigger" type="Area2D" parent="."]
 position = Vector2(60, 0)
-collision_layer = 256
+collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EastTrigger"]

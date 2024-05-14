@@ -7,8 +7,8 @@ extends CharacterBody2D
 @export var normal_friction: float = 0.85
 
 @export_group("Health & Damage")
-@export var max_health: int = 3
-@export var health: int = 3
+@export var max_health: int = 12
+@export var health: int = 12
 @export var touch_damage: int = 1
 
 @onready var _hurt_area: Area2D = $HurtArea
@@ -35,3 +35,8 @@ func _physics_process(delta: float) -> void:
 
 func repel(amount: Vector2) -> void:
     _repel_amount += amount
+
+func damage(amount: int) -> void:
+    health -= amount
+    if health <= 0:
+        queue_free()
