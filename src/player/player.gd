@@ -7,15 +7,29 @@ class_name Player
 @export var face_horizontal: Rect2 = Rect2(88, 0, 16, 16)
 
 @export_group("Movement")
-@export var base_speed: float = 80
-@export var accel: float = 1600
-@export var decel: float = 800
+@export var normal_max_speed: float = 64
+# how long does it take to go from 0 speed to max speed
+@export var normal_accel_time: float = 0.02
+@export var normal_friction: float = 0.85
+
+@export_group("Health & Damage")
+@export var max_health: int = 3
+@export var health: int = 3
+@export var iframe_time: float = 1.0
 
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _source_parent: WeaponSourceParent = $WeaponSourceParent
 var _repel_total: Vector2 = Vector2.ZERO
 
+var _iframe_timer: float = 0
+
+func _ready() -> void:
+    Global.player = self
+
 func _physics_process(delta: float) -> void:
+    if _iframe_timer > 0:
+        _iframe_timer -= delta
+    
     var wish_dir := Vector2(
         Input.get_axis("move_left", "move_right"),
         Input.get_axis("move_up", "move_down"))
@@ -31,18 +45,20 @@ func _physics_process(delta: float) -> void:
     if shoot_dir:
         _source_parent.target_rotation = shoot_dir.angle()
     
+    _source_parent.update_sources(delta, shoot_dir != Vector2.ZERO)
+    
     if wish_dir:
-        velocity += wish_dir.normalized() * accel * delta
-        velocity = velocity.limit_length(base_speed)
-    else:
-        velocity = velocity.move_toward(Vector2.ZERO, decel * delta)
+        velocity += wish_dir.normalized() * delta * normal_max_speed / normal_accel_time
+        velocity = velocity.limit_length(normal_max_speed)
     
     velocity += _repel_total
-
+    
     move_and_slide()
     
+    velocity *= normal_friction
+    
     if is_on_wall():
-        try_enter_doors()
+        try_enter_doors(wish_dir)
     
     # TODO: fix cobblestoning
     
@@ -58,10 +74,26 @@ func _update_sprite(flip_dir: Vector2) -> void:
     if flip_dir.x != 0:
         _sprite.region_rect = face_horizontal
 
+func try_enter_doors(wish_dir: Vector2) -> void:
+    if wish_dir.y < 0 and Global.game.room.door_trigger_has(Room.NORTH, self):
+        position = Global.game.goto_room(Room.NORTH)
+    elif wish_dir.y > 0 and Global.game.room.door_trigger_has(Room.SOUTH, self):
+        position = Global.game.goto_room(Room.SOUTH)
+    elif wish_dir.x < 0 and Global.game.room.door_trigger_has(Room.WEST, self):
+        position = Global.game.goto_room(Room.WEST)
+    elif wish_dir.x > 0 and Global.game.room.door_trigger_has(Room.EAST, self):
+        position = Global.game.goto_room(Room.EAST)
+
 func repel(amount: Vector2) -> void:
     _repel_total += amount
 
-func try_enter_doors() -> void:
-    for cardinal in range(Room.CARDINAL_MAX):
-        if Global.game.room.door_trigger_has(cardinal, self):
-            position = Global.game.goto_room(cardinal)
+func try_damage(amount: int) -> void:
+    if _iframe_timer > 0:
+        return
+
+    health -= amount
+    _iframe_timer = iframe_time
+    Global.player_damaged.emit()
+    if health <= 0:
+        Global.player_died.emit()
+

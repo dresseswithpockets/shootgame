@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://d1p3o2pfmxq3u"]
+[gd_scene load_steps=7 format=3 uid="uid://d1p3o2pfmxq3u"]
 
 [ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="1_awofx"]
 [ext_resource type="Script" path="res://player/player.gd" id="1_mifob"]
@@ -8,7 +8,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cwssp"]
 size = Vector2(9, 13)
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2lwoy"]
+radius = 4.5
+height = 13.0
+
+[node name="Player" type="CharacterBody2D" groups=["actors"]]
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_mifob")
@@ -18,6 +22,9 @@ texture = ExtResource("1_awofx")
 region_enabled = true
 region_rect = Rect2(72, 0, 16, 16)
 
+[node name="WeaponSourceParent" parent="." instance=ExtResource("4_umbdo")]
+radius = 10.0
+
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0.5)
 shape = SubResource("RectangleShape2D_cwssp")
@@ -25,5 +32,10 @@ shape = SubResource("RectangleShape2D_cwssp")
 [node name="Repel" parent="." instance=ExtResource("3_2anu8")]
 position = Vector2(-0.5, 0.5)
 
-[node name="WeaponSourceParent" parent="." instance=ExtResource("4_umbdo")]
-radius = 10.0
+[node name="HitArea" type="Area2D" parent="."]
+position = Vector2(-0.5, 0.5)
+collision_layer = 2
+collision_mask = 96
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+shape = SubResource("CapsuleShape2D_2lwoy")

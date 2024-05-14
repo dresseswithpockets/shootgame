@@ -2,6 +2,7 @@ extends Node
 class_name Game
 
 @onready var floor_generator: FloorGenerator = $FloorGenerator
+@onready var bullets: Node2D = $Bullets
 
 var room_idx: Vector2i = FloorGenerator.FLOOR_CENTER
 var room: Room
@@ -12,6 +13,9 @@ func _ready() -> void:
 func _on_floor_generated(rooms: Array[Array]) -> void:
     room_idx = FloorGenerator.FLOOR_CENTER
     room = rooms[room_idx.x][room_idx.y]
+
+func add_bullet(bullet: Node2D) -> void:
+    bullets.add_child(bullet)
 
 # returns the position the player should be set to for the next room
 func goto_room(cardinal: int) -> Vector2:

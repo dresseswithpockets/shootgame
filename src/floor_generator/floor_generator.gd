@@ -125,7 +125,7 @@ func generate_floor_plan(floor_depth: int) -> bool:
                 if center_neighbors < 4 and randi_range(0, 8) <= branch_length:
                     break
             
-            var require_low_neighbors := next_idx == FLOOR_CENTER
+            var require_low_neighbors := next_idx != FLOOR_CENTER
             var potential_next_rooms: Array[Vector2i] = []
             if current_floor_plan.check_adjacent_eligibility(next_idx + Vector2i.LEFT, require_low_neighbors):
                 potential_next_rooms.push_back(next_idx + Vector2i.LEFT)

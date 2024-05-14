@@ -16,8 +16,13 @@ func _process(delta: float) -> void:
         rotation = smoothdamp_angle(
             rotation,
             target_rotation,
-            10,
+            15,
             delta)
+
+func update_sources(delta: float, should_shoot: bool) -> void:
+    for source in get_children():
+        var dir := global_position.direction_to(source.global_position)
+        source.update(delta, dir, should_shoot)
 
 func add_source() -> void:
     var new_source: WeaponSource = weapon_source_scene.instantiate()

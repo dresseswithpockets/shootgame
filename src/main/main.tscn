@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bcq38fa835j77"]
+[gd_scene load_steps=8 format=3 uid="uid://bcq38fa835j77"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_yjvpm"]
-[ext_resource type="PackedScene" uid="uid://d1p3o2pfmxq3u" path="res://player/player.tscn" id="2_62foe"]
-[ext_resource type="Script" path="res://floor_generator/floor_generator.gd" id="2_fhvhp"]
-[ext_resource type="Script" path="res://main/game.gd" id="2_o3803"]
-[ext_resource type="PackedScene" uid="uid://bu8bdchqtgdvj" path="res://demobox/demobox.tscn" id="3_t7ls0"]
+[ext_resource type="PackedScene" uid="uid://dewbdarr64j21" path="res://enemies/walker.tscn" id="3_wiawn"]
+[ext_resource type="PackedScene" uid="uid://bleb7stis2t5i" path="res://main/game.tscn" id="4_aqcv5"]
+[ext_resource type="Script" path="res://player/health_control.gd" id="5_u8oc8"]
+[ext_resource type="PackedScene" uid="uid://bp2d6dstu20qv" path="res://menu_death/menu_death.tscn" id="6_pgq8b"]
+[ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="6_tu4mh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r58hd"]
 
@@ -12,20 +13,13 @@
 process_mode = 3
 script = ExtResource("1_yjvpm")
 
-[node name="Game" type="Node2D" parent="."]
-process_mode = 1
-script = ExtResource("2_o3803")
+[node name="Game" parent="." instance=ExtResource("4_aqcv5")]
 
-[node name="FloorGenerator" type="Node2D" parent="Game"]
-script = ExtResource("2_fhvhp")
+[node name="TestWalker1" parent="Game" instance=ExtResource("3_wiawn")]
+position = Vector2(-24, -30)
 
-[node name="Camera" type="Camera2D" parent="Game"]
-zoom = Vector2(4.5, 4.5)
-
-[node name="Player" parent="Game" instance=ExtResource("2_62foe")]
-
-[node name="Demobox" parent="Game" instance=ExtResource("3_t7ls0")]
-position = Vector2(26, 1)
+[node name="TestWalker2" parent="Game" instance=ExtResource("3_wiawn")]
+position = Vector2(23, -32)
 
 [node name="PausedContainer" type="CenterContainer" parent="."]
 visible = false
@@ -42,4 +36,29 @@ label_settings = SubResource("LabelSettings_r58hd")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="floor_generated" from="Game/FloorGenerator" to="Game" method="_on_floor_generated"]
+[node name="HealthControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -127.0
+offset_top = 63.0
+offset_right = 127.0
+offset_bottom = 71.0
+script = ExtResource("5_u8oc8")
+texture = ExtResource("6_tu4mh")
+region = Rect2(32, 0, 8, 8)
+
+[node name="MenuDeathParent" type="Control" parent="."]
+custom_minimum_size = Vector2(256, 144)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="MenuDeath" parent="MenuDeathParent" node_paths=PackedStringArray("start_again_select_label", "quit_select_label", "you_cant_go_label") instance=ExtResource("6_pgq8b")]
+visible = false
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+start_again_select_label = NodePath("Control/CenterContainer2/HBoxContainer/SelectLabel")
+quit_select_label = NodePath("Control/CenterContainer3/HBoxContainer/SelectLabel")
+you_cant_go_label = NodePath("Control/CenterContainer4/YouCantGoLabel")
+metadata/_edit_use_anchors_ = true
