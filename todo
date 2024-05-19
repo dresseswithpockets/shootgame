@@ -14,7 +14,7 @@ DONE add shooting to the player
 DONE add health & damage to the player
 DONE add death screen
 DONE replace sprite sheet with individual sprites - this can be optimized into a sprite sheet later
-TODO fix linear bullet directional sprite
+DONE fix linear bullet directional sprite
 TODO add shoot SFX
 TODO add damage SFX
 TODO add basic music loop

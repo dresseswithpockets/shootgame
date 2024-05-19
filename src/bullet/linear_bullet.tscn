@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ca1l64ldtl555"]
+[gd_scene load_steps=6 format=3 uid="uid://ca1l64ldtl555"]
 
 [ext_resource type="Script" path="res://bullet/bullet.gd" id="1_5bkqs"]
 [ext_resource type="Texture2D" uid="uid://bn3ddimy0o1pd" path="res://bullet/bullet_linear_north.png" id="2_mg4cq"]
+[ext_resource type="Texture2D" uid="uid://dhbrbyvew2bly" path="res://bullet/bullet_linear_west.png" id="3_aae02"]
+[ext_resource type="Texture2D" uid="uid://crob5gm5pa6m1" path="res://bullet/bullet_linear_nw.png" id="4_sh47d"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_41db3"]
 radius = 2.23607
@@ -9,8 +11,19 @@ radius = 2.23607
 [node name="LinearBullet" type="Node2D"]
 script = ExtResource("1_5bkqs")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="SpriteNorth" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_mg4cq")
+region_rect = Rect2(1, 24, 5, 8)
+
+[node name="SpriteWest" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3_aae02")
+region_rect = Rect2(1, 24, 5, 8)
+
+[node name="SpriteNorthWest" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("4_sh47d")
 region_rect = Rect2(1, 24, 5, 8)
 
 [node name="Area2D" type="Area2D" parent="."]
