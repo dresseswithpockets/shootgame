@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bba0khl0kw2a7"
-path="res://.godot/imported/player_west.png-61f0ba086248bf7a3d52f00f0670c482.ctex"
+uid="uid://bb50v4wyx78p0"
+path="res://.godot/imported/walker.png-593951b2217339edfdef1e1caf18f1de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/player_west.png"
-dest_files=["res://.godot/imported/player_west.png-61f0ba086248bf7a3d52f00f0670c482.ctex"]
+source_file="res://enemies/walker.png"
+dest_files=["res://.godot/imported/walker.png-593951b2217339edfdef1e1caf18f1de.ctex"]
 
 [params]
 

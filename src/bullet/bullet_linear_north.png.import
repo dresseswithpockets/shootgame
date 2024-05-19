@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxljdowhfxy7m"
-path="res://.godot/imported/door_north.png-c6316c4fd5ee834c105717a606eacba6.ctex"
+uid="uid://bn3ddimy0o1pd"
+path="res://.godot/imported/bullet_linear_north.png-f27fe2e5e006d5bf7da26d6e49764cf0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/door_north.png"
-dest_files=["res://.godot/imported/door_north.png-c6316c4fd5ee834c105717a606eacba6.ctex"]
+source_file="res://bullet/bullet_linear_north.png"
+dest_files=["res://.godot/imported/bullet_linear_north.png-f27fe2e5e006d5bf7da26d6e49764cf0.ctex"]
 
 [params]
 

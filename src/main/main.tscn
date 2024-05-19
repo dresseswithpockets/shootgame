@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://main/main.gd" id="1_yjvpm"]
 [ext_resource type="PackedScene" uid="uid://dewbdarr64j21" path="res://enemies/walker.tscn" id="3_wiawn"]
 [ext_resource type="PackedScene" uid="uid://bleb7stis2t5i" path="res://main/game.tscn" id="4_aqcv5"]
-[ext_resource type="Texture2D" uid="uid://bacxl08g3s3po" path="res://sprites/heart.png" id="5_rb6n4"]
+[ext_resource type="Texture2D" uid="uid://bacxl08g3s3po" path="res://player/heart.png" id="5_rb6n4"]
 [ext_resource type="Script" path="res://player/health_control.gd" id="5_u8oc8"]
 [ext_resource type="PackedScene" uid="uid://bp2d6dstu20qv" path="res://menu_death/menu_death.tscn" id="6_pgq8b"]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crob5gm5pa6m1"
-path="res://.godot/imported/bullet_linear_nw.png-cc64ddf5cd7525256531d62efcdae624.ctex"
+uid="uid://bba0khl0kw2a7"
+path="res://.godot/imported/player_west.png-bd2f0d3dcce72a5cd6de6c5e9c0d6b26.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/bullet_linear_nw.png"
-dest_files=["res://.godot/imported/bullet_linear_nw.png-cc64ddf5cd7525256531d62efcdae624.ctex"]
+source_file="res://player/player_west.png"
+dest_files=["res://.godot/imported/player_west.png-bd2f0d3dcce72a5cd6de6c5e9c0d6b26.ctex"]
 
 [params]
 
