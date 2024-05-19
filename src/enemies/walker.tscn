@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://enemies/enemy.gd" id="1_6ktas"]
 [ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="2_48i4p"]
-[ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="2_d2sc6"]
+[ext_resource type="Texture2D" uid="uid://bb50v4wyx78p0" path="res://sprites/walker.png" id="2_velbt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j2ofl"]
 size = Vector2(16, 16)
@@ -19,8 +19,7 @@ script = ExtResource("1_6ktas")
 normal_max_speed = 16.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_d2sc6")
-region_enabled = true
+texture = ExtResource("2_velbt")
 region_rect = Rect2(56, 16, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

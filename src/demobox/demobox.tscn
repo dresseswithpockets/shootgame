@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://bu8bdchqtgdvj"]
 
-[ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="1_fyetn"]
 [ext_resource type="Script" path="res://demobox/simple_body.gd" id="1_ub0cw"]
 [ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="2_b7w82"]
+[ext_resource type="Texture2D" uid="uid://bd41bkx5qjbpc" path="res://sprites/sheet_02.png" id="2_urjee"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6w1kp"]
 size = Vector2(4, 4)
@@ -19,8 +19,7 @@ damp_speed = 50.0
 shape = SubResource("RectangleShape2D_6w1kp")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_fyetn")
-region_enabled = true
+texture = ExtResource("2_urjee")
 region_rect = Rect2(8, 0, 8, 8)
 
 [node name="Repel" parent="." instance=ExtResource("2_b7w82")]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://d1p3o2pfmxq3u"]
 
-[ext_resource type="Texture2D" uid="uid://kj351omgcji8" path="res://sprites/sheet.png" id="1_awofx"]
 [ext_resource type="Script" path="res://player/player.gd" id="1_mifob"]
+[ext_resource type="Texture2D" uid="uid://dyh1qnomj7vx4" path="res://sprites/player_south.png" id="2_xdswd"]
 [ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="3_2anu8"]
 [ext_resource type="PackedScene" uid="uid://bn474nuopmjcy" path="res://weapon_source/weapon_source_parent.tscn" id="4_umbdo"]
 
@@ -18,8 +18,7 @@ motion_mode = 1
 script = ExtResource("1_mifob")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-texture = ExtResource("1_awofx")
-region_enabled = true
+texture = ExtResource("2_xdswd")
 region_rect = Rect2(72, 0, 16, 16)
 
 [node name="WeaponSourceParent" parent="." instance=ExtResource("4_umbdo")]

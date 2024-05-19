@@ -13,6 +13,7 @@ DONE add a basic linear bullet
 DONE add shooting to the player
 DONE add health & damage to the player
 DONE add death screen
+DONE replace sprite sheet with individual sprites - this can be optimized into a sprite sheet later
 TODO add shoot SFX
 TODO add damage SFX
 TODO add basic music loop
