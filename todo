@@ -27,6 +27,21 @@ TODO add heavy/burster enemy
 TODO add enemy placement to floor generation
 TODO add special boss room
 TODO add lilguy boss
+TODO add special boss door animation (fade out to black, fade in from black)
+TODO add hole to next floor after boss dies (circle fade in, circle fade out)
+TODO make first room on first floor always spawn as an item room
+TODO add stat modifier & item system (item children have a dictionary of modifier info, calculated in process)
+TODO add item: Use Meter To Shoot Faster
+TODO add rare item: Gain +1 Max Weapon
+TODO add rare item: Gain +1 Max Heart
+TODO add item room
+TODO add item drop chance to enemies
+TODO add item: When Hit, Stay Invincible For Longer
+TODO add item: Use Meter For +1 Temp Weapon
+TODO add item: Gain Meter Faster
+TODO add item: Mobs Drop Items More Often
+TODO add rare item: Use Meter To Clear All Bullets
+TODO add rare item: When Meter Active, Absorb 1 Damage
 TODO render mini-map menu showing dungeon layout
 TODO gamepad axis deadzone remapping (godot might do this for us...)
 TODO experiment with z-ordering (e.g. just sort by their y position)
