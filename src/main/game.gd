@@ -1,6 +1,7 @@
 extends Node
 class_name Game
 
+@onready var music_player: AudioStreamPlayer = $MusicPlayer
 @onready var floor_generator: FloorGenerator = $FloorGenerator
 @onready var bullets: Node2D = $Bullets
 

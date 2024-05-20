@@ -119,7 +119,9 @@ func try_damage(amount: int) -> void:
 
 func _handle_damaged() -> void:
     Global.player_damaged.emit()
-    
+    _sfx_player.stream = sfx_damaged
+    _sfx_player.play()
+
 func _handle_player_died() -> void:
     Global.player_died.emit()
 

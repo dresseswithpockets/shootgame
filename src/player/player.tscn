@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d1p3o2pfmxq3u"]
+[gd_scene load_steps=12 format=3 uid="uid://d1p3o2pfmxq3u"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_mifob"]
 [ext_resource type="AudioStream" uid="uid://bmc7o0ouru146" path="res://sfx/bit5.wav" id="2_x2s71"]
@@ -6,13 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="3_2anu8"]
 [ext_resource type="AudioStream" uid="uid://brt5td12u6bf5" path="res://sfx/bit6.wav" id="3_dkc3b"]
 [ext_resource type="PackedScene" uid="uid://bn474nuopmjcy" path="res://weapon_source/weapon_source_parent.tscn" id="4_umbdo"]
-
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_jx6b1"]
-playback_mode = 1
-streams_count = 2
-stream_0/stream = ExtResource("2_x2s71")
-stream_0/weight = 2.0
-stream_1/stream = ExtResource("3_dkc3b")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cwssp"]
 size = Vector2(9, 13)
@@ -63,7 +56,8 @@ _data = {
 collision_layer = 2
 motion_mode = 1
 script = ExtResource("1_mifob")
-sfx_shoot = SubResource("AudioStreamRandomizer_jx6b1")
+sfx_shoot = ExtResource("2_x2s71")
+sfx_damaged = ExtResource("3_dkc3b")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_xdswd")

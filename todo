@@ -17,8 +17,8 @@ DONE replace sprite sheet with individual sprites - this can be optimized into a
 DONE fix linear bullet directional sprite
 DONE add shoot SFX
 DONE add player sprite flashing during iframes
-TODO add damage SFX
-TODO add basic music loop
+DONE add damage SFX
+DONE add basic music loop
 TODO add death hitsleep
 TODO when player dies, stop all music & play death music loop on death screen
 TODO add door entry SFX
