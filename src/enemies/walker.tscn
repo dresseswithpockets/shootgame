@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dewbdarr64j21"]
 
-[ext_resource type="Script" path="res://enemies/enemy.gd" id="1_6ktas"]
+[ext_resource type="Script" path="res://enemies/walker.gd" id="1_6ktas"]
 [ext_resource type="PackedScene" uid="uid://bup6alxi8aw7b" path="res://repeller/repel.tscn" id="2_48i4p"]
 [ext_resource type="Texture2D" uid="uid://bb50v4wyx78p0" path="res://enemies/walker.png" id="2_velbt"]
 
