@@ -7,6 +7,8 @@ class_name WeaponSourceParent
 
 @export var target_rotation: float = 0
 
+var fired_this_frame: bool = false
+
 func _ready() -> void:
     for i in range(start_count):
         add_source()
@@ -19,10 +21,15 @@ func _process(delta: float) -> void:
             15,
             delta)
 
+func _physics_process(delta: float) -> void:
+    fired_this_frame = false
+
 func update_sources(delta: float, should_shoot: bool) -> void:
     for source in get_children():
         var dir := global_position.direction_to(source.global_position)
         source.update(delta, dir, should_shoot)
+        if source.fired_this_frame:
+            fired_this_frame = true
 
 func add_source() -> void:
     var new_source: WeaponSource = weapon_source_scene.instantiate()

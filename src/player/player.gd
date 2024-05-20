@@ -17,6 +17,11 @@ class_name Player
 @export var health: int = 3
 @export var iframe_time: float = 1.0
 
+@export_group("Sound")
+@export var sfx_shoot: AudioStream
+
+@onready var _sfx_player: AudioStreamPlayer = $AudioStreamPlayer
+
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _source_parent: WeaponSourceParent = $WeaponSourceParent
 var _repel_total: Vector2 = Vector2.ZERO
@@ -46,6 +51,10 @@ func _physics_process(delta: float) -> void:
         _source_parent.target_rotation = shoot_dir.angle()
     
     _source_parent.update_sources(delta, shoot_dir != Vector2.ZERO)
+    
+    if _source_parent.fired_this_frame:
+        _sfx_player.stream = sfx_shoot
+        _sfx_player.play()
     
     if wish_dir:
         velocity += wish_dir.normalized() * delta * normal_max_speed / normal_accel_time
