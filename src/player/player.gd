@@ -1,6 +1,12 @@
 extends CharacterBody2D
 class_name Player
 
+signal damaged
+signal iframes_started
+signal iframes_ended
+# fired at most once per frame if any weapon sources have fired
+signal shot_weapon_single
+
 @export_group("Sprite")
 @export var face_south_region: Rect2 = Rect2(72, 0, 16, 16)
 @export var face_north_region: Rect2 = Rect2(104, 0, 16, 16)
@@ -19,6 +25,9 @@ class_name Player
 
 @export_group("Sound")
 @export var sfx_shoot: AudioStream
+@export var sfx_damaged: AudioStream
+
+@onready var _animator: AnimationPlayer = $AnimationPlayer
 
 @onready var _sfx_player: AudioStreamPlayer = $AudioStreamPlayer
 
@@ -34,6 +43,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
     if _iframe_timer > 0:
         _iframe_timer -= delta
+        if _iframe_timer <= 0:
+            _handle_iframes_ended()
     
     var wish_dir := Vector2(
         Input.get_axis("move_left", "move_right"),
@@ -53,8 +64,7 @@ func _physics_process(delta: float) -> void:
     _source_parent.update_sources(delta, shoot_dir != Vector2.ZERO)
     
     if _source_parent.fired_this_frame:
-        _sfx_player.stream = sfx_shoot
-        _sfx_player.play()
+        _handle_shot_weapon_single()
     
     if wish_dir:
         velocity += wish_dir.normalized() * delta * normal_max_speed / normal_accel_time
@@ -102,7 +112,28 @@ func try_damage(amount: int) -> void:
 
     health -= amount
     _iframe_timer = iframe_time
-    Global.player_damaged.emit()
+    _handle_damaged()
+    _handle_iframes_started()
     if health <= 0:
-        Global.player_died.emit()
+        _handle_player_died()
 
+func _handle_damaged() -> void:
+    Global.player_damaged.emit()
+    
+func _handle_player_died() -> void:
+    Global.player_died.emit()
+
+func _handle_iframes_started() -> void:
+    iframes_started.emit()
+    _animator.play(&"player_iframe_flash")
+
+func _handle_iframes_ended() -> void:
+    iframes_ended.emit()
+    
+    if _animator.is_playing() and _animator.current_animation == &"player_iframe_flash":
+        _animator.play(&"player_sprite_normal")
+
+func _handle_shot_weapon_single() -> void:
+    shot_weapon_single.emit()
+    _sfx_player.stream = sfx_shoot
+    _sfx_player.play()
