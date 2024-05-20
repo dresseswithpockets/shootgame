@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" path="res://main/game.gd" id="1_ii0v4"]
 [ext_resource type="Script" path="res://floor_generator/floor_generator.gd" id="2_4rgg2"]
+[ext_resource type="AudioStream" uid="uid://dhq7jshl4x4jp" path="res://sfx/bit3.wav" id="2_5hww5"]
 [ext_resource type="PackedScene" uid="uid://d1p3o2pfmxq3u" path="res://player/player.tscn" id="3_4tha1"]
-[ext_resource type="AudioStream" uid="uid://b2ryakc738fpi" path="res://music/music1.wav" id="4_c7v4n"]
 
 [node name="Game" type="Node2D"]
 process_mode = 1
 script = ExtResource("1_ii0v4")
+sfx_door_enter = ExtResource("2_5hww5")
 
 [node name="FloorGenerator" type="Node2D" parent="."]
 script = ExtResource("2_4rgg2")
@@ -19,9 +20,6 @@ zoom = Vector2(4.5, 4.5)
 
 [node name="Player" parent="." instance=ExtResource("3_4tha1")]
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_c7v4n")
-autoplay = true
-bus = &"Music"
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 
 [connection signal="floor_generated" from="FloorGenerator" to="." method="_on_floor_generated"]

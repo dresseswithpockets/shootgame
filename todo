@@ -20,8 +20,8 @@ DONE add player sprite flashing during iframes
 DONE add damage SFX
 DONE add basic music loop
 TODO add death hitsleep
-TODO when player dies, stop all music & play death music loop on death screen
-TODO add door entry SFX
+DONE when player dies, stop all music & play death music loop on death screen
+DONE add door entry SFX
 TODO render entities with z-ordering (e.g. just sort by their y position)
 TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
 TODO render mini-map menu showing dungeon layout

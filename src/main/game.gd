@@ -1,7 +1,9 @@
 extends Node
 class_name Game
 
-@onready var music_player: AudioStreamPlayer = $MusicPlayer
+@export var sfx_door_enter: AudioStream
+
+@onready var sfx_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var floor_generator: FloorGenerator = $FloorGenerator
 @onready var bullets: Node2D = $Bullets
 
@@ -42,5 +44,11 @@ func goto_room(cardinal: int) -> Vector2:
     room = floor_generator.rooms[room_idx.x][room_idx.y]
     
     room.enable()
+    
+    sfx_play_door_enter()
 
     return target_player_pos
+
+func sfx_play_door_enter() -> void:
+    sfx_player.stream = sfx_door_enter
+    sfx_player.play()
