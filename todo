@@ -22,22 +22,25 @@ DONE add basic music loop
 TODO add death hitsleep
 DONE when player dies, stop all music & play death music loop on death screen
 DONE add door entry SFX
-TODO render entities with z-ordering (e.g. just sort by their y position)
-TODO add entity-sprite parenting - entities can contain multiple sprites with different offsets, origins, rotations, tints
+TODO add jumper enemy
+TODO add heavy/burster enemy
+TODO add enemy placement to floor generation
+TODO add special boss room
+TODO add lilguy boss
 TODO render mini-map menu showing dungeon layout
-TODO gamepad axis deadzone remapping
+TODO gamepad axis deadzone remapping (godot might do this for us...)
+TODO experiment with z-ordering (e.g. just sort by their y position)
 
 # ux
 DONE refactor KeyState to allow for multiple keys mapped to a single action
 DONE refactor move_* and shoot_* actions to behave like virtual axes which can be backed by gamepad axes or button pairs
+TODO add basic options menu with volume controls for each bus
+TODO add options menu for remappable keybinds
 
 # devex
 TODO hot-reloading
 TODO add in-game performance menu - should show FPS, real frame time, capped frame time used for fixed integrations, the number of entities on screen, etc
 TODO add in-game quake-style developer console
 TODO add in-game developer menu for setting dungeon parameters, room parameters, entity parameters, altering the shape of the dungeon, placing/deleting entities, etc. dev menu should pause the update loop by default, and allow the user to "step" the update loop
-TODO add support for compiling with emscripten/emcc for web
-TODO clean up main.c into platform-specific main.desktop.c and main.web.c
-TODO setup Unity for unit tests
 TODO notarget mode - disables NPCs from targetting the player
 TODO select entities in devmenu - visual entities can be selected by clicking on them, and that will highlight their attributes in the devmenu tree
