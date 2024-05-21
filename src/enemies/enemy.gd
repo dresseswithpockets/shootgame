@@ -1,10 +1,4 @@
-extends CharacterBody2D
-
-@export_group("Movement")
-@export var normal_max_speed: float = 32
-# how long does it take to go from 0 speed to max speed
-@export var normal_accel_time: float = 0.02
-@export var normal_friction: float = 0.85
+class_name Enemy extends CharacterBody2D
 
 @export_group("Health & Damage")
 @export var max_health: int = 12
@@ -14,15 +8,14 @@ extends CharacterBody2D
 @onready var _hurt_area: Area2D = $HurtArea
 var _repel_amount: Vector2 = Vector2.ZERO
 
-func _physics_process(delta: float) -> void:
-    var wish_dir := global_position.direction_to(Global.player.global_position)
-    velocity += wish_dir * delta * normal_max_speed / normal_accel_time
-    velocity = velocity.limit_length(normal_max_speed)
+func physics_process(delta: float) -> void:
+    pass
+
+func apply_repel() -> void:
     velocity += _repel_amount
-    
-    move_and_slide()
-    
-    velocity *= normal_friction
+
+func _physics_process(delta: float) -> void:
+    physics_process(delta)
     
     # try damaging anything we're intersecting every frame. This way, any other actors with
     # iframes will still get damaged again if they're still inside us

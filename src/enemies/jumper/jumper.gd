@@ -1,12 +1,4 @@
-class_name Jumper extends CharacterBody2D
-
-@export_group("Health & Damage")
-@export var max_health: int = 12
-@export var health: int = 12
-@export var touch_damage: int = 1
-
-@onready var _hurt_area: Area2D = $HurtArea
-var _repel_amount: Vector2 = Vector2.ZERO
+class_name Jumper extends Enemy
 
 @export_group("Jumping & Movement")
 @export var normal_friction: float = 0.96
@@ -17,26 +9,16 @@ var _repel_amount: Vector2 = Vector2.ZERO
 
 @onready var jump_delay_timer: float = jump_delay
 
-func _physics_process(delta: float) -> void:
+func physics_process(delta: float) -> void:
     jump_delay_timer -= delta
     if jump_delay_timer <= 0:
         velocity = get_jump_dir() * jump_speed
         jump_delay_timer = jump_delay
     
-    velocity += _repel_amount
-
+    apply_repel()
     move_and_slide()
 
     velocity *= normal_friction
-    
-    # try damaging anything we're intersecting every frame. This way, any other actors with
-    # iframes will still get damaged again if they're still inside us
-    for area in _hurt_area.get_overlapping_areas():
-        var parent: Node = area.get_parent()
-        if "try_damage" in parent:
-            parent.try_damage(touch_damage)
-    
-    _repel_amount = Vector2.ZERO
 
 func get_jump_dir() -> Vector2:
     var choice = randf()
@@ -59,11 +41,3 @@ func get_jump_dir() -> Vector2:
     
     # we want them to move "inwards" towards the center so lerp to the original dir
     return orthogonal.slerp(dir, 0.5)
-
-func repel(amount: Vector2) -> void:
-    _repel_amount += amount
-
-func damage(amount: int) -> void:
-    health -= amount
-    if health <= 0:
-        queue_free()
