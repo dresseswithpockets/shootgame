@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://bcq38fa835j77"]
+
+[ext_resource type="Script" path="res://main/main.gd" id="1_yjvpm"]
+[ext_resource type="PackedScene" uid="uid://d1p3o2pfmxq3u" path="res://player/player.tscn" id="2_62foe"]
+[ext_resource type="Script" path="res://floor_generator/floor_generator.gd" id="2_fhvhp"]
+[ext_resource type="Script" path="res://main/game.gd" id="2_o3803"]
+[ext_resource type="PackedScene" uid="uid://bu8bdchqtgdvj" path="res://demobox/demobox.tscn" id="3_t7ls0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_r58hd"]
+
+[node name="Main" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_yjvpm")
+
+[node name="Game" type="Node2D" parent="."]
+process_mode = 1
+script = ExtResource("2_o3803")
+
+[node name="FloorGenerator" type="Node2D" parent="Game"]
+script = ExtResource("2_fhvhp")
+
+[node name="Camera" type="Camera2D" parent="Game"]
+zoom = Vector2(4.5, 4.5)
+
+[node name="Player" parent="Game" instance=ExtResource("2_62foe")]
+
+[node name="Demobox" parent="Game" instance=ExtResource("3_t7ls0")]
+position = Vector2(26, 1)
+
+[node name="PausedContainer" type="CenterContainer" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PausedLabel" type="Label" parent="PausedContainer"]
+layout_mode = 2
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_r58hd")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="floor_generated" from="Game/FloorGenerator" to="Game" method="_on_floor_generated"]

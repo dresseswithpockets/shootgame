@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxcmrmdin8wb4"]
+
+[ext_resource type="Texture2D" uid="uid://cxljdowhfxy7m" path="res://doors/door_north.png" id="1_sgybf"]
+
+[node name="DoorNorth" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_sgybf")
+region_rect = Rect2(24, 8, 16, 8)
