@@ -22,7 +22,7 @@ DONE add basic music loop
 TODO add death hitsleep
 DONE when player dies, stop all music & play death music loop on death screen
 DONE add door entry SFX
-TODO add jumper enemy
+DONE add jumper enemy
 TODO add heavy/burster enemy
 TODO add enemy placement to floor generation
 TODO add special boss room
