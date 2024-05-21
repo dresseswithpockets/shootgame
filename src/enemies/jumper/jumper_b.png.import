@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8ajie4f3o67"
-path="res://.godot/imported/sheet_08.png-3bba10d8f1c0ff370cfa8e9bd2efd3e6.ctex"
+path="res://.godot/imported/jumper_b.png-3f4ca2de9b42692054e5be39b1d81005.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/sheet_08.png"
-dest_files=["res://.godot/imported/sheet_08.png-3bba10d8f1c0ff370cfa8e9bd2efd3e6.ctex"]
+source_file="res://enemies/jumper/jumper_b.png"
+dest_files=["res://.godot/imported/jumper_b.png-3f4ca2de9b42692054e5be39b1d81005.ctex"]
 
 [params]
 

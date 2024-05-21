@@ -12,6 +12,7 @@ var room: Room
 
 func _ready() -> void:
     Global.game = self
+    Global.camera = $Camera
 
 func _on_floor_generated(rooms: Array[Array]) -> void:
     room_idx = FloorGenerator.FLOOR_CENTER

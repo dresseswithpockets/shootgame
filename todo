@@ -48,20 +48,23 @@ TODO experiment with z-ordering (e.g. just sort by their y position)
 TODO experiment with rainworld style parallax tiling
 
 # design
-research: what is the kind of feeling we want the player to have with the game?
+spike: what is the kind of feeling we want the player to have with the game?
     - progression through knowledge
         - item interactions arent necessarily documented directly in the game, but the player may find them by playing
         - a "journal" or "rule book" or "appendix" could provide details about all of the different items, enemies, rooms, weapons, etc that the player comes across
             - some may be available by default, some may be shown but scratched/inked out (a la. inscryption)
-            
+
     - progression through unlocks
         - player could unlock new weapons, items, characters, difficulties, enemies, room types, as they complete more challenges
         - even new "knowledge" (journal entries, for example) could be unlocked
+
     - progression through mechanical skill
         - natural progression through experiencing the dungeons, enemies, weapons, items, etc
+
     - the adrenaline of "getting out of a tight spot". Big tension, big release, big reward
         - maybe this is something that can be done dynamically? how do we identify what a "tight spot" is? low health? lots of enemies/bullets in the player's vacinity? how do we reward them for getting out of that tight spot? maybe we can give them a little handicap when theyre in a tight spot to give them a bigger opportunity to get out of that tight spot?
-    - how do we design the dungeon to have tension & release? 
+
+    - how do we design the dungeon around tension & release? 
         - we could have floors with big tension up front, and nice constant low-tension for the rest of the floor
         - we can also have floors that are pretty easy but build up in difficulty as the player progresses, up to the boss
         - we dont necessarily need the big floor boss to be the last room on each floor, we can place these fights dynamically. 

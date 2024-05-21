@@ -7,3 +7,5 @@ signal player_died
 var main: Main
 var game: Game
 var player: Player
+var camera: Camera2D
+var room_center: Vector2 = Vector2.ZERO
