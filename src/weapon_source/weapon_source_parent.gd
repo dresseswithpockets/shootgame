@@ -6,6 +6,7 @@ class_name WeaponSourceParent
 @export var start_count: int = 1
 
 @export var target_rotation: float = 0
+@export var min_assumed_count: int = 4
 
 var fired_this_frame: bool = false
 
@@ -37,7 +38,7 @@ func add_source() -> void:
     update_source_offsets()
 
 func update_source_offsets() -> void:
-    var assumed_count = max(get_child_count(), 4)
+    var assumed_count = max(get_child_count(), min_assumed_count)
     var index := 0
     for child in get_children():
         var fraction := index / float(assumed_count)
