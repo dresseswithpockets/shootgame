@@ -9,18 +9,20 @@ class_name WeaponSourceParent
 @export var min_assumed_count: int = 4
 
 var fired_this_frame: bool = false
+var source_rotation: float = 0
 
 func _ready() -> void:
     for i in range(start_count):
         add_source()
 
 func _process(delta: float) -> void:
-    if !is_equal_approx(fmod(rotation, 360), fmod(target_rotation, 360)):
-        rotation = smoothdamp_angle(
-            rotation,
+    if !is_equal_approx(fmod(source_rotation, TAU), fmod(target_rotation, TAU)):
+        source_rotation = smoothdamp_angle(
+            source_rotation,
             target_rotation,
             15,
             delta)
+        update_source_offsets()
 
 func _physics_process(delta: float) -> void:
     fired_this_frame = false
@@ -42,7 +44,7 @@ func update_source_offsets() -> void:
     var index := 0
     for child in get_children():
         var fraction := index / float(assumed_count)
-        var dir := Vector2.from_angle(fraction * 2 * PI)
+        var dir := Vector2.from_angle(source_rotation + (fraction * 2 * PI))
         child.position = dir * radius
         index += 1
 
