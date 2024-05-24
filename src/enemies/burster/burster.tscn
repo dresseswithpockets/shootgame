@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4fjuuej22r57"]
+[gd_scene load_steps=12 format=3 uid="uid://b4fjuuej22r57"]
 
 [ext_resource type="PackedScene" uid="uid://dauw4d2sb8p72" path="res://enemies/enemy.tscn" id="1_2qnuc"]
 [ext_resource type="Script" path="res://enemies/burster/burster.gd" id="2_kqcbf"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://enemies/burster/burster_state_moving.gd" id="5_kqi58"]
 [ext_resource type="Script" path="res://enemies/burster/burster_state_shooting.gd" id="6_2rbkv"]
 [ext_resource type="PackedScene" uid="uid://bn474nuopmjcy" path="res://weapon_source/weapon_source_parent.tscn" id="7_o4g2v"]
+[ext_resource type="PackedScene" uid="uid://cxhp0vf1y54ir" path="res://weapon_source/burster_weapon_source.tscn" id="8_a0s68"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_arrhj"]
 size = Vector2(16, 16)
@@ -48,6 +49,7 @@ script = ExtResource("5_kqi58")
 script = ExtResource("6_2rbkv")
 
 [node name="WeaponSourceParent" parent="." index="5" instance=ExtResource("7_o4g2v")]
+default_weapon_scene = ExtResource("8_a0s68")
 radius = 12.0
 start_count = 3
 use_angle_from_owner = true

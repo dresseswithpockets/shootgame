@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxhp0vf1y54ir"]
+
+[ext_resource type="Script" path="res://weapon_source/weapon_source.gd" id="1_mnir1"]
+[ext_resource type="PackedScene" uid="uid://cue6in6w0wd5a" path="res://bullet/bullet_burst.tscn" id="2_47npp"]
+[ext_resource type="Texture2D" uid="uid://benmyhht5ctks" path="res://sprites/weapon_source.png" id="2_necow"]
+
+[node name="BursterWeaponSource" type="Node2D"]
+script = ExtResource("1_mnir1")
+bullet_prefab = ExtResource("2_47npp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_necow")
+region_rect = Rect2(120, 16, 4, 4)

@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://cue6in6w0wd5a"]
+
+[ext_resource type="Script" path="res://bullet/bullet_burst.gd" id="1_di2vr"]
+[ext_resource type="Texture2D" uid="uid://h4vdoivu38r8" path="res://bullet/bullet_burst.png" id="2_haprf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_41db3"]
+radius = 2.23607
+
+[node name="BurstBullet" type="Node2D"]
+script = ExtResource("1_di2vr")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_haprf")
+region_rect = Rect2(1, 24, 5, 8)
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_41db3")

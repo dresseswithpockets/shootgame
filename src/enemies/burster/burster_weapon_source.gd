@@ -1,7 +1,6 @@
 extends WeaponSource
 
-# the burster weapon fires sort of like a minigun - each barrel fires as it
-# passes over the direction that the enemy wants to shoot
+# the burster weapon fires pellets which start fast but ease out
 
 var _last_dot := -1.0
 var _first := true

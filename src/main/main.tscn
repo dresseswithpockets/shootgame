@@ -68,4 +68,3 @@ bus = &"Music"
 
 [node name="Burster" parent="." instance=ExtResource("8_vxwob")]
 position = Vector2(-42, -37)
-source_turn_speed = 0.5
