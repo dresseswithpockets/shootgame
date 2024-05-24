@@ -1,0 +1,55 @@
+[gd_scene load_steps=11 format=3 uid="uid://b4fjuuej22r57"]
+
+[ext_resource type="PackedScene" uid="uid://dauw4d2sb8p72" path="res://enemies/enemy.tscn" id="1_2qnuc"]
+[ext_resource type="Script" path="res://enemies/burster/burster.gd" id="2_kqcbf"]
+[ext_resource type="Texture2D" uid="uid://h1hojolqo3x4" path="res://enemies/burster/burster.png" id="3_5u11y"]
+[ext_resource type="Script" path="res://state_machine/state_machine.gd" id="4_or3yw"]
+[ext_resource type="Script" path="res://enemies/burster/burster_state_moving.gd" id="5_kqi58"]
+[ext_resource type="Script" path="res://enemies/burster/burster_state_shooting.gd" id="6_2rbkv"]
+[ext_resource type="PackedScene" uid="uid://bn474nuopmjcy" path="res://weapon_source/weapon_source_parent.tscn" id="7_o4g2v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arrhj"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hj8uf"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3floj"]
+radius = 4.0
+
+[node name="Burster" instance=ExtResource("1_2qnuc")]
+script = ExtResource("2_kqcbf")
+max_shoot_distance = 40.0
+min_shoot_distance = 20.0
+source_turn_speed = 0.5
+normal_max_speed = 24.0
+normal_accel_time = 0.02
+normal_friction = 0.85
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("3_5u11y")
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_arrhj")
+
+[node name="CollisionShape2D" parent="HurtArea" index="0"]
+shape = SubResource("CircleShape2D_hj8uf")
+
+[node name="CollisionShape2D" parent="Repel" index="0"]
+shape = SubResource("CircleShape2D_3floj")
+
+[node name="StateMachine" type="Node" parent="." index="4"]
+script = ExtResource("4_or3yw")
+
+[node name="Moving" type="Node" parent="StateMachine" index="0"]
+script = ExtResource("5_kqi58")
+
+[node name="Shooting" type="Node" parent="StateMachine" index="1"]
+script = ExtResource("6_2rbkv")
+
+[node name="WeaponSourceParent" parent="." index="5" instance=ExtResource("7_o4g2v")]
+radius = 12.0
+start_count = 3
+min_assumed_count = 8
+
+[editable path="Repel"]

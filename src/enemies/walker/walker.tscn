@@ -1,12 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://c786b4vnn8mj5"]
+[gd_scene load_steps=6 format=3 uid="uid://c786b4vnn8mj5"]
 
 [ext_resource type="PackedScene" uid="uid://dauw4d2sb8p72" path="res://enemies/enemy.tscn" id="1_2n7es"]
 [ext_resource type="Script" path="res://enemies/walker/walker.gd" id="2_u2oye"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4sd1e"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tsm33"]
+radius = 7.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t6ciw"]
+radius = 8.0
 
 [node name="Walker" instance=ExtResource("1_2n7es")]
 script = ExtResource("2_u2oye")
 normal_max_speed = 32.0
 normal_accel_time = 0.02
 normal_friction = 0.85
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource("RectangleShape2D_4sd1e")
+
+[node name="CollisionShape2D" parent="HurtArea" index="0"]
+shape = SubResource("CircleShape2D_tsm33")
+
+[node name="CollisionShape2D" parent="Repel" index="0"]
+shape = SubResource("CircleShape2D_t6ciw")
 
 [editable path="Repel"]

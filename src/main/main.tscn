@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bcq38fa835j77"]
+[gd_scene load_steps=10 format=3 uid="uid://bcq38fa835j77"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_yjvpm"]
 [ext_resource type="AudioStream" uid="uid://b27y8n76kpec6" path="res://music/die1.wav" id="3_p2myl"]
@@ -6,8 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bacxl08g3s3po" path="res://player/heart.png" id="5_rb6n4"]
 [ext_resource type="Script" path="res://player/health_control.gd" id="5_u8oc8"]
 [ext_resource type="PackedScene" uid="uid://bp2d6dstu20qv" path="res://menu_death/menu_death.tscn" id="6_pgq8b"]
-[ext_resource type="PackedScene" uid="uid://dh74j8i50dohy" path="res://enemies/jumper/jumper.tscn" id="8_mo7ek"]
-[ext_resource type="PackedScene" uid="uid://c786b4vnn8mj5" path="res://enemies/walker/walker.tscn" id="9_0tpf1"]
+[ext_resource type="PackedScene" uid="uid://b4fjuuej22r57" path="res://enemies/burster/burster.tscn" id="8_vxwob"]
 [ext_resource type="AudioStream" uid="uid://b2ryakc738fpi" path="res://music/music1.wav" id="9_uywg4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r58hd"]
@@ -19,12 +18,6 @@ music_die = ExtResource("3_p2myl")
 music_loop = ExtResource("9_uywg4")
 
 [node name="Game" parent="." instance=ExtResource("4_aqcv5")]
-
-[node name="Jumper" parent="Game" instance=ExtResource("8_mo7ek")]
-position = Vector2(-24, -31)
-
-[node name="Walker" parent="Game" instance=ExtResource("9_0tpf1")]
-position = Vector2(22, -29)
 
 [node name="PausedContainer" type="CenterContainer" parent="."]
 visible = false
@@ -72,3 +65,7 @@ metadata/_edit_use_anchors_ = true
 stream = ExtResource("9_uywg4")
 autoplay = true
 bus = &"Music"
+
+[node name="Burster" parent="." instance=ExtResource("8_vxwob")]
+position = Vector2(-42, -37)
+source_turn_speed = 0.5

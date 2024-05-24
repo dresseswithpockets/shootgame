@@ -1,8 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://dh74j8i50dohy"]
+[gd_scene load_steps=7 format=3 uid="uid://dh74j8i50dohy"]
 
 [ext_resource type="PackedScene" uid="uid://dauw4d2sb8p72" path="res://enemies/enemy.tscn" id="1_h2q4i"]
 [ext_resource type="Script" path="res://enemies/jumper/jumper.gd" id="2_h86gf"]
-[ext_resource type="Texture2D" uid="uid://bmp67tjypkuqk" path="res://enemies/jumper/jumper_a.png" id="3_n2uth"]
+[ext_resource type="Texture2D" uid="uid://b8ajie4f3o67" path="res://enemies/jumper/jumper_b.png" id="2_odwwe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ifw12"]
+size = Vector2(8, 8)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_q050i"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w62uy"]
+radius = 4.0
 
 [node name="Jumper" instance=ExtResource("1_h2q4i")]
 script = ExtResource("2_h86gf")
@@ -13,9 +22,15 @@ jump_player_chance = 0.25
 jump_perp_chance = 0.5
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("3_n2uth")
+texture = ExtResource("2_odwwe")
 
 [node name="CollisionShape2D" parent="." index="1"]
-position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_ifw12")
+
+[node name="CollisionShape2D" parent="HurtArea" index="0"]
+shape = SubResource("CircleShape2D_q050i")
+
+[node name="CollisionShape2D" parent="Repel" index="0"]
+shape = SubResource("CircleShape2D_w62uy")
 
 [editable path="Repel"]
