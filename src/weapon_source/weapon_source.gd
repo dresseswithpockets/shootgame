@@ -1,5 +1,4 @@
-extends Node2D
-class_name WeaponSource
+class_name WeaponSource extends Node2D
 
 @onready var _linear_bullet_prefab: PackedScene = preload("res://bullet/linear_bullet.tscn")
 var delay_timer: float = 0
