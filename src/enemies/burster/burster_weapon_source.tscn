@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjhtm3u41vslo"]
+
+[ext_resource type="Script" path="res://enemies/burster/burster_weapon_source.gd" id="1_tsk1i"]
+[ext_resource type="Texture2D" uid="uid://benmyhht5ctks" path="res://sprites/weapon_source.png" id="2_ryqed"]
+
+[node name="WeaponSource" type="Node2D"]
+script = ExtResource("1_tsk1i")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ryqed")
+region_rect = Rect2(120, 16, 4, 4)

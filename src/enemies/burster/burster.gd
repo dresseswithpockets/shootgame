@@ -18,7 +18,8 @@ class_name Burster extends Enemy
 @onready var source_parent: WeaponSourceParent = $WeaponSourceParent
 
 func physics_process(delta: float) -> void:
-    source_parent.target_rotation += source_turn_speed * TAU * delta
+    source_parent.target_rotation = global_position.direction_to(Global.player.global_position).angle()
+    # source_parent.target_rotation += source_turn_speed * TAU * delta
     
     apply_repel()
     move_and_slide()
