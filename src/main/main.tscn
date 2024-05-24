@@ -6,8 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bacxl08g3s3po" path="res://player/heart.png" id="5_rb6n4"]
 [ext_resource type="Script" path="res://player/health_control.gd" id="5_u8oc8"]
 [ext_resource type="PackedScene" uid="uid://bp2d6dstu20qv" path="res://menu_death/menu_death.tscn" id="6_pgq8b"]
-[ext_resource type="PackedScene" uid="uid://dgvb670nsb5vu" path="res://enemies/jumper/jumper.tscn" id="8_mo7ek"]
-[ext_resource type="PackedScene" uid="uid://dewbdarr64j21" path="res://enemies/walker/walker.tscn" id="9_0tpf1"]
+[ext_resource type="PackedScene" uid="uid://dh74j8i50dohy" path="res://enemies/jumper/jumper.tscn" id="8_mo7ek"]
+[ext_resource type="PackedScene" uid="uid://c786b4vnn8mj5" path="res://enemies/walker/walker.tscn" id="9_0tpf1"]
 [ext_resource type="AudioStream" uid="uid://b2ryakc738fpi" path="res://music/music1.wav" id="9_uywg4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r58hd"]
