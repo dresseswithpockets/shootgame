@@ -1,7 +1,7 @@
 extends Node2D
 class_name WeaponSourceParent
 
-@onready var weapon_source_scene: PackedScene = preload("res://weapon_source/weapon_source.tscn")
+@export var default_weapon_scene: PackedScene = preload("res://weapon_source/weapon_source.tscn")
 @export var radius: float = 8
 @export var start_count: int = 1
 
@@ -32,7 +32,7 @@ func update_sources(delta: float, should_shoot: bool) -> void:
             fired_this_frame = true
 
 func add_source() -> void:
-    var new_source: WeaponSource = weapon_source_scene.instantiate()
+    var new_source: WeaponSource = default_weapon_scene.instantiate()
     add_child(new_source)
     update_source_offsets()
 
