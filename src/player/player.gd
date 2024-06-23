@@ -7,6 +7,10 @@ signal iframes_ended
 # fired at most once per frame if any weapon sources have fired
 signal shot_weapon_single
 
+enum { TEAM_PLAYER, TEAM_ENEMY }
+
+@export var team: int = TEAM_PLAYER
+
 @export_group("Sprite")
 @export var face_south_region: Rect2 = Rect2(72, 0, 16, 16)
 @export var face_north_region: Rect2 = Rect2(104, 0, 16, 16)

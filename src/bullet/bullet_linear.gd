@@ -22,6 +22,8 @@ var direction: Vector2 = Vector2.UP
 ]
 
 func _ready() -> void:
+    super._ready()
+    
     var direction_angle := fmod(direction.angle(), TAU) / TAU
     # angles returned by angle() are between [-PI, PI), with the center(0) at Vector2.RIGHT
     if direction_angle < 0:

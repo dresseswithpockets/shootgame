@@ -2,6 +2,7 @@ class_name WeaponSource extends Node2D
 
 @export var bullet_prefab: PackedScene = preload("res://bullet/linear_bullet.tscn")
 @export var delay_time: float = 0.2
+@export_enum("Player", "Enemy") var team: int = 0
 var delay_timer: float = 0
 
 var fired_this_frame: bool = false
@@ -11,7 +12,7 @@ func _physics_process(delta: float) -> void:
 
 func fire(dir: Vector2) -> void:
     var bullet = bullet_prefab.instantiate()
-    bullet.team = Bullet.TEAM_PLAYER
+    bullet.team = team
     bullet.global_position = global_position
     bullet.direction = dir
     Global.game.add_bullet(bullet)

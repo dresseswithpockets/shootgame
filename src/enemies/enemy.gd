@@ -1,5 +1,9 @@
 class_name Enemy extends CharacterBody2D
 
+enum { TEAM_PLAYER, TEAM_ENEMY }
+
+@export_enum("Player", "Enemy") var team: int = TEAM_ENEMY
+
 @export_group("Health & Damage")
 @export var max_health: int = 12
 @export var health: int = 12

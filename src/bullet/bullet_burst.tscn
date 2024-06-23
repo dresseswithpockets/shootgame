@@ -8,15 +8,15 @@ radius = 2.23607
 
 [node name="BurstBullet" type="Node2D"]
 script = ExtResource("1_di2vr")
+lifetime = 1.0
 
 [node name="Sprite" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("2_haprf")
 region_rect = Rect2(1, 24, 5, 8)
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 32
-collision_mask = 256
+collision_mask = 128
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_41db3")

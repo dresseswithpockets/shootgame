@@ -11,6 +11,6 @@ func _ready() -> void:
     velocity = direction * speed
 
 func _physics_process(delta: float) -> void:
-    # position += velocity * delta
-    # velocity *= damp
+    position += velocity * delta
+    velocity *= damp
     pass

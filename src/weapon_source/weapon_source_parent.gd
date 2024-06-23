@@ -12,6 +12,8 @@ class_name WeaponSourceParent
 
 @export var index_offset: int = 0
 
+@export_enum("Player", "Enemy") var team: int = 0
+
 var fired_this_frame: bool = false
 var source_rotation: float = 0
 
@@ -44,6 +46,7 @@ func update_sources(delta: float, should_shoot: bool) -> void:
 
 func add_source() -> void:
     var new_source: WeaponSource = default_weapon_scene.instantiate()
+    new_source.team = team
     add_child(new_source)
     update_source_offsets()
 

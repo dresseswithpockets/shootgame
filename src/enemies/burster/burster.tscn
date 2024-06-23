@@ -55,5 +55,6 @@ start_count = 3
 use_angle_from_owner = true
 min_assumed_count = 12
 index_offset = -1
+team = 1
 
 [editable path="Repel"]

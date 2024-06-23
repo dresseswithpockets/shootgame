@@ -5,31 +5,29 @@ enum { TEAM_PLAYER, TEAM_ENEMY }
 @onready var area: Area2D = $Area2D
 
 @export_enum("Player", "Enemy") var team: int = TEAM_PLAYER
-@export_flags_2d_physics var team_player_mask: int = 1 << 8
-@export_flags_2d_physics var team_enemy_mask: int = 1 << 7
 
 @export var destroy_on_hit: bool = true
 @export var touch_damage: int = 1
 @export var lifetime: float = 32
 
+var _lifetime_timer: SceneTreeTimer
+
 func _ready() -> void:
     area.area_entered.connect(_on_area_entered)
-    match team:
-        TEAM_PLAYER:
-            area.collision_mask = team_player_mask
-        TEAM_ENEMY:
-            area.collision_mask = team_enemy_mask
-    
-    get_tree().create_timer(lifetime).timeout.connect(queue_free)
+    _lifetime_timer = get_tree().create_timer(lifetime)
+    _lifetime_timer.timeout.connect(queue_free)
 
 func _on_area_entered(area: Area2D) -> void:
     if is_queued_for_deletion():
         return
 
-    # note: bullet teams are handled by the collision mask
     var area_parent: Node = area.get_parent()
+    if not "team" in area_parent or area_parent.team == team:
+        return
     if "damage" in area_parent:
         area_parent.damage(touch_damage)
+    if "try_damage" in area_parent:
+        area_parent.try_damage(touch_damage)
     
     # TODO: how should it work when the area is a bullet?
     if destroy_on_hit:
