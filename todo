@@ -23,7 +23,7 @@ TODO add death hitsleep
 DONE when player dies, stop all music & play death music loop on death screen
 DONE add door entry SFX
 DONE add jumper enemy
-TODO add heavy/burster enemy
+DONE add heavy/burster enemy
 TODO add enemy placement to floor generation
 TODO add special boss room
 TODO add lilguy boss
