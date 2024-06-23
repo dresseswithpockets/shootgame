@@ -98,6 +98,8 @@ func _update_sprite(flip_dir: Vector2) -> void:
         _sprite.region_rect = face_horizontal
 
 func try_enter_doors(wish_dir: Vector2) -> void:
+    if Global.game.room.locked:
+        return
     if wish_dir.y < 0 and Global.game.room.door_trigger_has(Room.NORTH, self):
         position = Global.game.goto_room(Room.NORTH)
     elif wish_dir.y > 0 and Global.game.room.door_trigger_has(Room.SOUTH, self):

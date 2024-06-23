@@ -36,4 +36,6 @@ func repel(amount: Vector2) -> void:
 func damage(amount: int) -> void:
     health -= amount
     if health <= 0:
+        get_parent().remove_child(self)
+        Global.enemy_died.emit()
         queue_free()

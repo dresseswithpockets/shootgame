@@ -20,6 +20,8 @@ jump_speed = 128.0
 jump_delay = 1.0
 jump_player_chance = 0.25
 jump_perp_chance = 0.5
+max_health = 4
+health = 4
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_odwwe")

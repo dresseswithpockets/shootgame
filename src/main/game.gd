@@ -13,10 +13,15 @@ var room: Room
 func _ready() -> void:
     Global.game = self
     Global.camera = $Camera
+    Global.enemy_died.connect(_on_enemy_died)
 
 func _on_floor_generated(rooms: Array[Array]) -> void:
     room_idx = FloorGenerator.FLOOR_CENTER
     room = rooms[room_idx.x][room_idx.y]
+
+func _on_enemy_died() -> void:
+    if !room.has_any_enemies():
+        room.locked = false
 
 func add_bullet(bullet: Node2D) -> void:
     bullets.add_child(bullet)
@@ -50,6 +55,8 @@ func goto_room(cardinal: int) -> Vector2:
     room = floor_generator.rooms[room_idx.x][room_idx.y]
     
     room.enable()
+    if room.has_any_enemies():
+        room.locked = true
     
     sfx_play_door_enter()
 

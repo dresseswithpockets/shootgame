@@ -3,6 +3,7 @@ extends Node
 
 signal player_damaged
 signal player_died
+signal enemy_died
 
 var main: Main
 var game: Game

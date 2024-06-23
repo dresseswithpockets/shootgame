@@ -11,6 +11,8 @@ enum { DOOR_NONE, DOOR_NORMAL, DOOR_BOSS }
 @onready var west_trigger: Area2D = $WestTrigger
 @onready var east_trigger: Area2D = $EastTrigger
 
+@onready var enemies: Node2D = $Enemies
+
 @export var north_pos: Vector2i = Vector2i(-1, -8)
 @export var south_pos: Vector2i = Vector2i(-1, 7)
 @export var west_pos: Vector2i = Vector2i(-8, -1)
@@ -40,7 +42,6 @@ var locked: bool = false:
     DoorCellSet.new(east_pos, east_pos + Vector2i.DOWN, 6),
 ]
 var _doors: Array = [DOOR_NONE, DOOR_NONE, DOOR_NONE, DOOR_NONE]
-var _locked: bool = false
 
 func disable() -> void:
     visible = false
@@ -49,6 +50,12 @@ func disable() -> void:
 func enable() -> void:
     visible = true
     process_mode = PROCESS_MODE_INHERIT
+
+func add_enemy(enemy: Enemy) -> void:
+    enemies.add_child(enemy)
+
+func has_any_enemies() -> bool:
+    return enemies.get_child_count() > 0
 
 func door_trigger_has(cardinal: int, body: PhysicsBody2D) -> bool:
     var trigger = null
@@ -87,7 +94,7 @@ func update_door(cardinal: int) -> void:
             use_source_id = -1
         DOOR_BOSS:
             use_row = door_boss_row
-    if _locked:
+    if locked:
         use_row = door_locked_row
     var cellset = _cell_tuples[cardinal]
     door_layer.set_cell(cellset.a, use_source_id, Vector2i(cellset.col, use_row))

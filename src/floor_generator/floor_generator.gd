@@ -66,10 +66,6 @@ func generate_floor(floor_depth: int) -> void:
             room.cell = Vector2i(x, y)
             room.name = "Room%d%d" % [x, y]
             
-            # add enemies to all rooms except for the boss room, item room, and center
-            if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
-                generate_enemies(room)
-            
             if FLOOR_CENTER.x == x and FLOOR_CENTER.y == y:
                 room.enable()
             else:
@@ -85,6 +81,10 @@ func generate_floor(floor_depth: int) -> void:
                 room.set_door(Room.NORTH, Room.DOOR_NORMAL)
             if current_floor_plan.has_room_at(Vector2i(x, y + 1)):
                 room.set_door(Room.SOUTH, Room.DOOR_NORMAL)
+            
+            # add enemies to all rooms except for the boss room, item room, and center
+            if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
+                generate_enemies(room)
     
     floor_generated.emit(rooms)
 
@@ -113,7 +113,7 @@ func generate_enemies_swarm(room: Room) -> void:
     for i in count:
         var enemy: Enemy = jumper_prefab.instantiate()
         enemy.position = _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
-        room.add_child(enemy)
+        room.add_enemy(enemy)
 
 func generate_enemies_walkers(room: Room) -> void:
     var count := 0
@@ -125,7 +125,7 @@ func generate_enemies_walkers(room: Room) -> void:
     for i in count:
         var enemy: Enemy = walker_prefab.instantiate()
         enemy.position = _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
-        room.add_child(enemy)
+        room.add_enemy(enemy)
 
 func generate_enemies_walker_pets(room: Room) -> void:
     var count := 0
@@ -136,18 +136,18 @@ func generate_enemies_walker_pets(room: Room) -> void:
         var enemy: Enemy = walker_prefab.instantiate()
         var enemy_pos := _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
         enemy.position = enemy_pos
-        room.add_child(enemy)
+        room.add_enemy(enemy)
         
         var dir_to_center := enemy_pos.direction_to(FLOOR_CENTER)
         enemy_pos += dir_to_center * 16
         enemy = jumper_prefab.instantiate()
         enemy.position = enemy_pos
-        room.add_child(enemy)
+        room.add_enemy(enemy)
 
 func generate_enemies_burster(room: Room) -> void:
     var enemy: Enemy = burster_prefab.instantiate()
     enemy.position = _enemy_gen_corners.pick_random()
-    room.add_child(enemy)
+    room.add_enemy(enemy)
 
 func generate_floor_plan(floor_depth: int) -> bool:
     current_floor_plan = FloorPlan.new()
