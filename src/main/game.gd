@@ -21,6 +21,10 @@ func _on_floor_generated(rooms: Array[Array]) -> void:
 func add_bullet(bullet: Node2D) -> void:
     bullets.add_child(bullet)
 
+func remove_all_bullets() -> void:
+    for bullet in bullets.get_children():
+        bullet.queue_free()
+
 # returns the position the player should be set to for the next room
 func goto_room(cardinal: int) -> Vector2:
     var next_idx = room_idx
@@ -40,6 +44,7 @@ func goto_room(cardinal: int) -> Vector2:
             target_player_pos = Vector2(-48, 0)
     
     room.disable()
+    remove_all_bullets()
     
     room_idx = next_idx
     room = floor_generator.rooms[room_idx.x][room_idx.y]

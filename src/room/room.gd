@@ -16,6 +16,8 @@ enum { DOOR_NONE, DOOR_NORMAL, DOOR_BOSS }
 @export var west_pos: Vector2i = Vector2i(-8, -1)
 @export var east_pos: Vector2i = Vector2i(7, -1)
 
+@export_enum("Normal", "Boss", "Item") var room_type: int = 0
+
 @export_group("Door Tile Coords")
 @export var source_id: int = 1
 @export var door_normal_row: int = 0
@@ -31,24 +33,22 @@ var locked: bool = false:
         locked = p
         update_doors()
 
-@onready var _cell_tuples: Array[DoorCellSet] = [
+@onready var _cell_tuples: Array = [
     DoorCellSet.new(north_pos, north_pos + Vector2i.RIGHT, 0),
     DoorCellSet.new(south_pos, south_pos + Vector2i.RIGHT, 4),
     DoorCellSet.new(west_pos + Vector2i.DOWN, west_pos, 2),
     DoorCellSet.new(east_pos, east_pos + Vector2i.DOWN, 6),
 ]
-var _doors: Array[int] = [DOOR_NONE, DOOR_NONE, DOOR_NONE, DOOR_NONE]
+var _doors: Array = [DOOR_NONE, DOOR_NONE, DOOR_NONE, DOOR_NONE]
 var _locked: bool = false
 
 func disable() -> void:
     visible = false
-    set_process(false)
-    set_physics_process(false)
+    process_mode = PROCESS_MODE_DISABLED
 
 func enable() -> void:
     visible = true
-    set_process(true)
-    set_physics_process(true)
+    process_mode = PROCESS_MODE_INHERIT
 
 func door_trigger_has(cardinal: int, body: PhysicsBody2D) -> bool:
     var trigger = null

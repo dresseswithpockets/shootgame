@@ -13,6 +13,9 @@ signal floor_generated(rooms: Array[Array])
 @export var max_base_room_count: int = 20
 
 @onready var room_prefab: PackedScene = preload("res://room/room.tscn")
+@onready var walker_prefab: PackedScene = preload("res://enemies/walker/walker.tscn")
+@onready var jumper_prefab: PackedScene = preload("res://enemies/jumper/jumper.tscn")
+@onready var burster_prefab: PackedScene = preload("res://enemies/burster/burster.tscn")
 
 var current_floor_plan: FloorPlan
 var rooms: Array[Array] = []
@@ -53,13 +56,19 @@ func generate_floor(floor_depth: int) -> void:
     var room_neighbors: Array[Vector2i] = []
     for x in range(FLOOR_WIDTH):
         for y in range(FLOOR_HEIGHT):
-            if !current_floor_plan.rooms[x][y]:
+            var floor_room: FloorRoom = current_floor_plan.rooms[x][y]
+            if floor_room == null:
                 continue
 
             var room: Room = room_prefab.instantiate()
             rooms[x][y] = room
+            room.room_type = floor_room.room_type
             room.cell = Vector2i(x, y)
             room.name = "Room%d%d" % [x, y]
+            
+            # add enemies to all rooms except for the boss room, item room, and center
+            if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
+                generate_enemies(room)
             
             if FLOOR_CENTER.x == x and FLOOR_CENTER.y == y:
                 room.enable()
@@ -79,6 +88,67 @@ func generate_floor(floor_depth: int) -> void:
     
     floor_generated.emit(rooms)
 
+var _enemy_gen_corners: Array[Vector2] = [
+    Vector2(-46, -46),
+    Vector2(46, -46),
+    Vector2(-46, 46),
+    Vector2(46, 46),
+]
+
+func generate_enemies(room: Room) -> void:
+    match randi_range(0, 3):
+        0:
+            generate_enemies_swarm(room)
+        1:
+            generate_enemies_walkers(room)
+        2:
+            generate_enemies_walker_pets(room)
+        3:
+            generate_enemies_burster(room)
+
+func generate_enemies_swarm(room: Room) -> void:
+    # generates a handful of jumpers, 1 per corner. Can be 3 or 4
+    var count := 3 + randi_range(0, 1)
+    _enemy_gen_corners.shuffle()
+    for i in count:
+        var enemy: Enemy = jumper_prefab.instantiate()
+        enemy.position = _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
+        room.add_child(enemy)
+
+func generate_enemies_walkers(room: Room) -> void:
+    var count := 0
+    var chance := randf()
+    if chance < 0.5: count = 1
+    elif chance <= 0.8: count = 2
+    else: count = 3
+    _enemy_gen_corners.shuffle()
+    for i in count:
+        var enemy: Enemy = walker_prefab.instantiate()
+        enemy.position = _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
+        room.add_child(enemy)
+
+func generate_enemies_walker_pets(room: Room) -> void:
+    var count := 0
+    var chance := randf()
+    if chance <= 0.75: count = 1
+    else: count = 2
+    for i in count:
+        var enemy: Enemy = walker_prefab.instantiate()
+        var enemy_pos := _enemy_gen_corners[wrapi(i, 0, len(_enemy_gen_corners))]
+        enemy.position = enemy_pos
+        room.add_child(enemy)
+        
+        var dir_to_center := enemy_pos.direction_to(FLOOR_CENTER)
+        enemy_pos += dir_to_center * 16
+        enemy = jumper_prefab.instantiate()
+        enemy.position = enemy_pos
+        room.add_child(enemy)
+
+func generate_enemies_burster(room: Room) -> void:
+    var enemy: Enemy = burster_prefab.instantiate()
+    enemy.position = _enemy_gen_corners.pick_random()
+    room.add_child(enemy)
+
 func generate_floor_plan(floor_depth: int) -> bool:
     current_floor_plan = FloorPlan.new()
     
@@ -90,7 +160,10 @@ func generate_floor_plan(floor_depth: int) -> bool:
     var min_dead_ends := 2
     
     # center is always enabled
-    current_floor_plan.rooms[FLOOR_CENTER.x][FLOOR_CENTER.y] = true
+    current_floor_plan.rooms[FLOOR_CENTER.x][FLOOR_CENTER.y] = FloorRoom.new()
+    # the center room is always an item room on the first floor
+    if floor_depth == 1:
+        current_floor_plan.rooms[FLOOR_CENTER.x][FLOOR_CENTER.y].room_type = FloorRoom.ITEM
     
     # visit rooms
     var room_stack: Array[Vector2i] = []
@@ -143,7 +216,7 @@ func generate_floor_plan(floor_depth: int) -> bool:
             
             next_idx = potential_next_rooms.pick_random()
             room_stack.push_back(next_idx)
-            current_floor_plan.rooms[next_idx.x][next_idx.y] = true
+            current_floor_plan.rooms[next_idx.x][next_idx.y] = FloorRoom.new()
             branch_length += 1
             room_count += 1
 
@@ -177,10 +250,22 @@ func generate_floor_plan(floor_depth: int) -> bool:
     # sort the real dead ends by distance from center, and pick the furthest for
     # special rooms
     real_ends.sort_custom(compare_distance_to_center)
-    current_floor_plan.boss_room = real_ends[0]
-    current_floor_plan.item_room = real_ends[1]
+    var boss_idx := real_ends[0]
+    current_floor_plan.rooms[boss_idx.x][boss_idx.y] = FloorRoom.new()
+    current_floor_plan.rooms[boss_idx.x][boss_idx.y].room_type = FloorRoom.BOSS
+    # TODO: setup boss room with boss?
+    
+    var item_idx := real_ends[1]
+    current_floor_plan.rooms[item_idx.x][item_idx.y] = FloorRoom.new()
+    current_floor_plan.rooms[item_idx.x][item_idx.y].room_type = FloorRoom.ITEM
+    # TODO: setup item room with items?
     
     return true
+
+
+class FloorRoom:
+    enum { NORMAL, BOSS, ITEM }
+    var room_type: int = NORMAL
 
 class FloorPlan:
     var rooms: Array[Array]
@@ -192,7 +277,7 @@ class FloorPlan:
         for x in range(FLOOR_WIDTH):
             var col = []
             for y in range(FLOOR_HEIGHT):
-                col.append(false)
+                col.append(null)
             self.rooms.append(col)
     
     func has_room_at(pos: Vector2i) -> bool:

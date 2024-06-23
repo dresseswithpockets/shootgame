@@ -24,7 +24,7 @@ DONE when player dies, stop all music & play death music loop on death screen
 DONE add door entry SFX
 DONE add jumper enemy
 DONE add heavy/burster enemy
-TODO add enemy placement to floor generation
+DONE add enemy placement to floor generation
 TODO add special boss room
 TODO add lilguy boss
 TODO add special boss door animation (fade out to black, fade in from black)

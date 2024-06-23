@@ -1,9 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://bcq38fa835j77"]
+[gd_scene load_steps=9 format=3 uid="uid://bcq38fa835j77"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_yjvpm"]
 [ext_resource type="AudioStream" uid="uid://b27y8n76kpec6" path="res://music/die1.wav" id="3_p2myl"]
 [ext_resource type="PackedScene" uid="uid://bleb7stis2t5i" path="res://main/game.tscn" id="4_aqcv5"]
-[ext_resource type="PackedScene" uid="uid://b4fjuuej22r57" path="res://enemies/burster/burster.tscn" id="5_ma5na"]
 [ext_resource type="Texture2D" uid="uid://bacxl08g3s3po" path="res://player/heart.png" id="5_rb6n4"]
 [ext_resource type="Script" path="res://player/health_control.gd" id="5_u8oc8"]
 [ext_resource type="PackedScene" uid="uid://bp2d6dstu20qv" path="res://menu_death/menu_death.tscn" id="6_pgq8b"]
@@ -18,9 +17,6 @@ music_die = ExtResource("3_p2myl")
 music_loop = ExtResource("9_uywg4")
 
 [node name="Game" parent="." instance=ExtResource("4_aqcv5")]
-
-[node name="Burster" parent="Game" instance=ExtResource("5_ma5na")]
-position = Vector2(-41, -32)
 
 [node name="PausedContainer" type="CenterContainer" parent="."]
 visible = false
