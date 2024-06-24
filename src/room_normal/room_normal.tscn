@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=4 uid="uid://jamb7gko8uq2"]
 
-[ext_resource type="Script" path="res://room_normal/room.gd" id="1_65e4x"]
-[ext_resource type="TileSet" uid="uid://dsc6rpjm2u54t" path="res://room_normal/room_solid_tile_set.tres" id="2_ojro0"]
+[ext_resource type="Script" path="res://room_normal/room_normal.gd" id="1_qk6ea"]
+[ext_resource type="TileSet" uid="uid://dsc6rpjm2u54t" path="res://room_normal/room_solid_tile_set.tres" id="2_yvcwn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_20elf"]
 size = Vector2(8, 8.5)
@@ -16,15 +16,15 @@ size = Vector2(8.5, 8)
 size = Vector2(8.5, 8)
 
 [node name="Room" type="Node2D"]
-script = ExtResource("1_65e4x")
+script = ExtResource("1_qk6ea")
 source_id = 2
 
 [node name="WallLayer" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAD8//j/AgAIAAAAAAD7//j/AgAIAAAAAAD6//j/AgAIAAAAAAD5//j/AgAIAAAAAAD4//j/AgAIAAAAAAD4//n/AgAIAAAAAAD4//r/AgAIAAAAAAD4//v/AgAIAAAAAAD4//z/AgAIAAAAAAD4//3/AgAIAAAAAAD4//7/AgAIAAAAAAD4////AgAIAAAAAAD4/wAAAgAIAAAAAAD4/wEAAgAIAAAAAAD4/wIAAgAIAAAAAAD4/wMAAgAIAAAAAAD4/wQAAgAIAAAAAAD4/wUAAgAIAAAAAAD4/wYAAgAIAAAAAAD4/wcAAgAIAAAAAAD5/wcAAgAIAAAAAAD6/wcAAgAIAAAAAAD7/wcAAgAIAAAAAAD8/wcAAgAIAAAAAAD9/wcAAgAIAAAAAAD+/wcAAgAIAAAAAAD//wcAAgAIAAAAAAAAAAcAAgAIAAAAAAABAAcAAgAIAAAAAAACAAcAAgAIAAAAAAADAAcAAgAIAAAAAAAEAAcAAgAIAAAAAAAFAAcAAgAIAAAAAAAGAAcAAgAIAAAAAAAHAAcAAgAIAAAAAAAHAAYAAgAIAAAAAAAHAAUAAgAIAAAAAAAHAAQAAgAIAAAAAAAHAAMAAgAIAAAAAAAHAAIAAgAIAAAAAAAHAAEAAgAIAAAAAAAHAAAAAgAIAAAAAAAHAP//AgAIAAAAAAAHAP7/AgAIAAAAAAAHAP3/AgAIAAAAAAAHAPz/AgAIAAAAAAAHAPv/AgAIAAAAAAAHAPr/AgAIAAAAAAAHAPn/AgAIAAAAAAAHAPj/AgAIAAAAAAAGAPj/AgAIAAAAAAAFAPj/AgAIAAAAAAAEAPj/AgAIAAAAAAADAPj/AgAIAAAAAAACAPj/AgAIAAAAAAABAPj/AgAIAAAAAAAAAPj/AgAIAAAAAAD///j/AgAIAAAAAAD+//j/AgAIAAAAAAD9//j/AgAIAAAAAAA=")
-tile_set = ExtResource("2_ojro0")
+tile_set = ExtResource("2_yvcwn")
 
 [node name="DoorLayer" type="TileMapLayer" parent="."]
-tile_set = ExtResource("2_ojro0")
+tile_set = ExtResource("2_yvcwn")
 collision_enabled = false
 navigation_enabled = false
 

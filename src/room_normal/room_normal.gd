@@ -1,5 +1,4 @@
-extends Node2D
-class_name Room
+class_name RoomNormal extends Room
 
 enum { UP, DOWN, LEFT, RIGHT }
 enum { NORTH, SOUTH, WEST, EAST, CARDINAL_MAX }
@@ -11,22 +10,16 @@ enum { DOOR_NONE, DOOR_NORMAL, DOOR_BOSS }
 @onready var west_trigger: Area2D = $WestTrigger
 @onready var east_trigger: Area2D = $EastTrigger
 
-@onready var enemies: Node2D = $Enemies
-
 @export var north_pos: Vector2i = Vector2i(-1, -8)
 @export var south_pos: Vector2i = Vector2i(-1, 7)
 @export var west_pos: Vector2i = Vector2i(-8, -1)
 @export var east_pos: Vector2i = Vector2i(7, -1)
-
-@export_enum("Normal", "Boss", "Item") var room_type: int = 0
 
 @export_group("Door Tile Coords")
 @export var source_id: int = 1
 @export var door_normal_row: int = 0
 @export var door_locked_row: int = 1
 @export var door_boss_row: int = 2
-
-@export var cell: Vector2i
 
 var locked: bool = false:
     get:
@@ -42,20 +35,6 @@ var locked: bool = false:
     DoorCellSet.new(east_pos, east_pos + Vector2i.DOWN, 6),
 ]
 var _doors: Array = [DOOR_NONE, DOOR_NONE, DOOR_NONE, DOOR_NONE]
-
-func disable() -> void:
-    visible = false
-    process_mode = PROCESS_MODE_DISABLED
-
-func enable() -> void:
-    visible = true
-    process_mode = PROCESS_MODE_INHERIT
-
-func add_enemy(enemy: Enemy) -> void:
-    enemies.add_child(enemy)
-
-func has_any_enemies() -> bool:
-    return enemies.get_child_count() > 0
 
 func door_trigger_has(cardinal: int, body: PhysicsBody2D) -> bool:
     var trigger = null
