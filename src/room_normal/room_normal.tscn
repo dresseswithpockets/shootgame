@@ -1,63 +1,69 @@
-[gd_scene load_steps=7 format=4 uid="uid://jamb7gko8uq2"]
+[gd_scene load_steps=8 format=4 uid="uid://bgx2b2if4jsgc"]
 
+[ext_resource type="PackedScene" uid="uid://d145ctvct3u5" path="res://room/room.tscn" id="1_egmqq"]
 [ext_resource type="Script" path="res://room_normal/room_normal.gd" id="1_qk6ea"]
 [ext_resource type="TileSet" uid="uid://dsc6rpjm2u54t" path="res://room_normal/room_solid_tile_set.tres" id="2_yvcwn"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_20elf"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2ra3p"]
 size = Vector2(8, 8.5)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bues4"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lcqdp"]
 size = Vector2(8, 8.5)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ts4iu"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lgrom"]
 size = Vector2(8.5, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2jphd"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rl2j8"]
 size = Vector2(8.5, 8)
 
-[node name="Room" type="Node2D"]
+[node name="RoomNormal" instance=ExtResource("1_egmqq")]
 script = ExtResource("1_qk6ea")
+north_pos = Vector2i(-1, -8)
+south_pos = Vector2i(-1, 7)
+west_pos = Vector2i(-8, -1)
+east_pos = Vector2i(7, -1)
 source_id = 2
+door_normal_row = 0
+door_locked_row = 1
+door_boss_row = 2
 
-[node name="WallLayer" type="TileMapLayer" parent="."]
+[node name="WallLayer" type="TileMapLayer" parent="." index="1"]
 tile_map_data = PackedByteArray("AAD8//j/AgAIAAAAAAD7//j/AgAIAAAAAAD6//j/AgAIAAAAAAD5//j/AgAIAAAAAAD4//j/AgAIAAAAAAD4//n/AgAIAAAAAAD4//r/AgAIAAAAAAD4//v/AgAIAAAAAAD4//z/AgAIAAAAAAD4//3/AgAIAAAAAAD4//7/AgAIAAAAAAD4////AgAIAAAAAAD4/wAAAgAIAAAAAAD4/wEAAgAIAAAAAAD4/wIAAgAIAAAAAAD4/wMAAgAIAAAAAAD4/wQAAgAIAAAAAAD4/wUAAgAIAAAAAAD4/wYAAgAIAAAAAAD4/wcAAgAIAAAAAAD5/wcAAgAIAAAAAAD6/wcAAgAIAAAAAAD7/wcAAgAIAAAAAAD8/wcAAgAIAAAAAAD9/wcAAgAIAAAAAAD+/wcAAgAIAAAAAAD//wcAAgAIAAAAAAAAAAcAAgAIAAAAAAABAAcAAgAIAAAAAAACAAcAAgAIAAAAAAADAAcAAgAIAAAAAAAEAAcAAgAIAAAAAAAFAAcAAgAIAAAAAAAGAAcAAgAIAAAAAAAHAAcAAgAIAAAAAAAHAAYAAgAIAAAAAAAHAAUAAgAIAAAAAAAHAAQAAgAIAAAAAAAHAAMAAgAIAAAAAAAHAAIAAgAIAAAAAAAHAAEAAgAIAAAAAAAHAAAAAgAIAAAAAAAHAP//AgAIAAAAAAAHAP7/AgAIAAAAAAAHAP3/AgAIAAAAAAAHAPz/AgAIAAAAAAAHAPv/AgAIAAAAAAAHAPr/AgAIAAAAAAAHAPn/AgAIAAAAAAAHAPj/AgAIAAAAAAAGAPj/AgAIAAAAAAAFAPj/AgAIAAAAAAAEAPj/AgAIAAAAAAADAPj/AgAIAAAAAAACAPj/AgAIAAAAAAABAPj/AgAIAAAAAAAAAPj/AgAIAAAAAAD///j/AgAIAAAAAAD+//j/AgAIAAAAAAD9//j/AgAIAAAAAAA=")
 tile_set = ExtResource("2_yvcwn")
 
-[node name="DoorLayer" type="TileMapLayer" parent="."]
+[node name="DoorLayer" type="TileMapLayer" parent="." index="2"]
 tile_set = ExtResource("2_yvcwn")
 collision_enabled = false
 navigation_enabled = false
 
-[node name="NorthTrigger" type="Area2D" parent="."]
+[node name="NorthTrigger" type="Area2D" parent="." index="3"]
 position = Vector2(0, -60)
 collision_layer = 16
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NorthTrigger"]
-shape = SubResource("RectangleShape2D_20elf")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NorthTrigger" index="0"]
+shape = SubResource("RectangleShape2D_2ra3p")
 
-[node name="SouthTrigger" type="Area2D" parent="."]
+[node name="SouthTrigger" type="Area2D" parent="." index="4"]
 position = Vector2(0, 60)
 collision_layer = 16
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SouthTrigger"]
-shape = SubResource("RectangleShape2D_bues4")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SouthTrigger" index="0"]
+shape = SubResource("RectangleShape2D_lcqdp")
 
-[node name="WestTrigger" type="Area2D" parent="."]
+[node name="WestTrigger" type="Area2D" parent="." index="5"]
 position = Vector2(-60, 0)
 collision_layer = 16
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WestTrigger"]
-shape = SubResource("RectangleShape2D_ts4iu")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WestTrigger" index="0"]
+shape = SubResource("RectangleShape2D_lgrom")
 
-[node name="EastTrigger" type="Area2D" parent="."]
+[node name="EastTrigger" type="Area2D" parent="." index="6"]
 position = Vector2(60, 0)
 collision_layer = 16
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EastTrigger"]
-shape = SubResource("RectangleShape2D_2jphd")
-
-[node name="Enemies" type="Node2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EastTrigger" index="0"]
+shape = SubResource("RectangleShape2D_rl2j8")

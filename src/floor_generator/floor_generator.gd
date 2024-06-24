@@ -12,7 +12,8 @@ signal floor_generated(rooms: Array[Array])
 @export var max_rand_bound: int = 5
 @export var max_base_room_count: int = 20
 
-@onready var room_prefab: PackedScene = preload("res://room/room.tscn")
+@onready var room_normal_prefab: PackedScene = preload("res://room_normal/room_normal.tscn")
+@onready var room_boss_prefab: PackedScene = preload("res://room_boss/room_boss.tscn")
 @onready var walker_prefab: PackedScene = preload("res://enemies/walker/walker.tscn")
 @onready var jumper_prefab: PackedScene = preload("res://enemies/jumper/jumper.tscn")
 @onready var burster_prefab: PackedScene = preload("res://enemies/burster/burster.tscn")
@@ -60,8 +61,14 @@ func generate_floor(floor_depth: int) -> void:
             if floor_room == null:
                 continue
 
+            var room_prefab := room_normal_prefab 
+            if floor_room.room_type == FloorRoom.BOSS:
+                room_prefab = room_boss_prefab
+
             var room: Room = room_prefab.instantiate()
             rooms[x][y] = room
+            # TODO: do we need to represent "room_type"? maybe item rooms dont need
+            #       to be "normal" rooms?
             room.room_type = floor_room.room_type
             room.cell = Vector2i(x, y)
             room.name = "Room%d%d" % [x, y]
@@ -73,18 +80,19 @@ func generate_floor(floor_depth: int) -> void:
                 
             add_child(room)
             
-            if current_floor_plan.has_room_at(Vector2i(x - 1, y)):
-                room.set_door(Room.WEST, Room.DOOR_NORMAL)
-            if current_floor_plan.has_room_at(Vector2i(x + 1, y)):
-                room.set_door(Room.EAST, Room.DOOR_NORMAL)
-            if current_floor_plan.has_room_at(Vector2i(x, y - 1)):
-                room.set_door(Room.NORTH, Room.DOOR_NORMAL)
-            if current_floor_plan.has_room_at(Vector2i(x, y + 1)):
-                room.set_door(Room.SOUTH, Room.DOOR_NORMAL)
+            if room is RoomNormal:
+                if current_floor_plan.has_room_at(Vector2i(x - 1, y)):
+                    room.set_door(RoomNormal.WEST, RoomNormal.DOOR_NORMAL)
+                if current_floor_plan.has_room_at(Vector2i(x + 1, y)):
+                    room.set_door(RoomNormal.EAST, RoomNormal.DOOR_NORMAL)
+                if current_floor_plan.has_room_at(Vector2i(x, y - 1)):
+                    room.set_door(RoomNormal.NORTH, RoomNormal.DOOR_NORMAL)
+                if current_floor_plan.has_room_at(Vector2i(x, y + 1)):
+                    room.set_door(RoomNormal.SOUTH, RoomNormal.DOOR_NORMAL)
             
-            # add enemies to all rooms except for the boss room, item room, and center
-            if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
-                generate_enemies(room)
+                # add enemies to all rooms except for the boss room, item room, and center
+                if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
+                    generate_enemies(room)
     
     floor_generated.emit(rooms)
 

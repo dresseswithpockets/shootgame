@@ -98,16 +98,17 @@ func _update_sprite(flip_dir: Vector2) -> void:
         _sprite.region_rect = face_horizontal
 
 func try_enter_doors(wish_dir: Vector2) -> void:
-    if Global.game.room.locked:
+    var room := Global.game.room as RoomNormal
+    if (not room) or Global.game.room.locked:
         return
-    if wish_dir.y < 0 and Global.game.room.door_trigger_has(Room.NORTH, self):
-        position = Global.game.goto_room(Room.NORTH)
-    elif wish_dir.y > 0 and Global.game.room.door_trigger_has(Room.SOUTH, self):
-        position = Global.game.goto_room(Room.SOUTH)
-    elif wish_dir.x < 0 and Global.game.room.door_trigger_has(Room.WEST, self):
-        position = Global.game.goto_room(Room.WEST)
-    elif wish_dir.x > 0 and Global.game.room.door_trigger_has(Room.EAST, self):
-        position = Global.game.goto_room(Room.EAST)
+    if wish_dir.y < 0 and room.door_trigger_has(RoomNormal.NORTH, self):
+        position = Global.game.goto_room(RoomNormal.NORTH)
+    elif wish_dir.y > 0 and room.door_trigger_has(RoomNormal.SOUTH, self):
+        position = Global.game.goto_room(RoomNormal.SOUTH)
+    elif wish_dir.x < 0 and room.door_trigger_has(RoomNormal.WEST, self):
+        position = Global.game.goto_room(RoomNormal.WEST)
+    elif wish_dir.x > 0 and room.door_trigger_has(RoomNormal.EAST, self):
+        position = Global.game.goto_room(RoomNormal.EAST)
 
 func repel(amount: Vector2) -> void:
     _repel_total += amount

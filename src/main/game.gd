@@ -35,16 +35,16 @@ func goto_room(cardinal: int) -> Vector2:
     var next_idx = room_idx
     var target_player_pos = Vector2.ZERO
     match cardinal:
-        Room.NORTH:
+        RoomNormal.NORTH:
             next_idx += Vector2i.UP
             target_player_pos = Vector2(0, 48)
-        Room.SOUTH:
+        RoomNormal.SOUTH:
             next_idx += Vector2i.DOWN
             target_player_pos = Vector2(0, -48)
-        Room.WEST:
+        RoomNormal.WEST:
             next_idx += Vector2i.LEFT
             target_player_pos = Vector2(48, 0)
-        Room.EAST:
+        RoomNormal.EAST:
             next_idx += Vector2i.RIGHT
             target_player_pos = Vector2(-48, 0)
     
