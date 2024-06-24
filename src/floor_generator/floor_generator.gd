@@ -81,20 +81,26 @@ func generate_floor(floor_depth: int) -> void:
             add_child(room)
             
             if room is RoomNormal:
-                if current_floor_plan.has_room_at(Vector2i(x - 1, y)):
-                    room.set_door(RoomNormal.WEST, RoomNormal.DOOR_NORMAL)
-                if current_floor_plan.has_room_at(Vector2i(x + 1, y)):
-                    room.set_door(RoomNormal.EAST, RoomNormal.DOOR_NORMAL)
-                if current_floor_plan.has_room_at(Vector2i(x, y - 1)):
-                    room.set_door(RoomNormal.NORTH, RoomNormal.DOOR_NORMAL)
-                if current_floor_plan.has_room_at(Vector2i(x, y + 1)):
-                    room.set_door(RoomNormal.SOUTH, RoomNormal.DOOR_NORMAL)
+                _try_set_room_door(current_floor_plan, Vector2i(x - 1, y), room, RoomNormal.WEST)
+                _try_set_room_door(current_floor_plan, Vector2i(x + 1, y), room, RoomNormal.EAST)
+                _try_set_room_door(current_floor_plan, Vector2i(x, y - 1), room, RoomNormal.NORTH)
+                _try_set_room_door(current_floor_plan, Vector2i(x, y + 1), room, RoomNormal.SOUTH)
             
                 # add enemies to all rooms except for the boss room, item room, and center
                 if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
                     generate_enemies(room)
     
     floor_generated.emit(rooms)
+
+func _try_set_room_door(plan: FloorPlan, cell: Vector2i, room: RoomNormal, cardinal: int) -> void:
+    if !current_floor_plan.has_room_at(cell):
+        return
+
+    var adjacent_room: FloorRoom = plan.rooms[cell.x][cell.y]
+    var door_type := RoomNormal.DOOR_NORMAL
+    if adjacent_room.room_type == FloorRoom.BOSS:
+        door_type = RoomNormal.DOOR_BOSS
+    room.set_door(cardinal, door_type)
 
 var _enemy_gen_corners: Array[Vector2] = [
     Vector2(-46, -46),
