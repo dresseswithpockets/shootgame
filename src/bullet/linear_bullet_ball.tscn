@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cajrjbnuv84ak"]
+
+[ext_resource type="PackedScene" uid="uid://ca1l64ldtl555" path="res://bullet/linear_bullet.tscn" id="1_g4js0"]
+[ext_resource type="Texture2D" uid="uid://b6py6slv5jv58" path="res://bullet/bullet_ball.png" id="2_vhjsp"]
+
+[node name="LinearBullet" instance=ExtResource("1_g4js0")]
+angular_speed = 6.283
+angular_radius = 2.5
+
+[node name="SpriteNorth" parent="AngularOrigin" index="0"]
+texture = ExtResource("2_vhjsp")
+
+[node name="SpriteWest" parent="AngularOrigin" index="1"]
+texture = ExtResource("2_vhjsp")
+
+[node name="SpriteNorthWest" parent="AngularOrigin" index="2"]
+texture = ExtResource("2_vhjsp")

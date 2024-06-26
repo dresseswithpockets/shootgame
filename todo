@@ -27,7 +27,10 @@ DONE add heavy/burster enemy
 DONE add enemy placement to floor generation
 DONE add room locking and unlocking as players defeat enemies
 TODO add special boss room
-TODO add lilguy boss
+TODO add lilguy cluster bullets
+DONE add lilguy boss phase 1
+TODO add "spread shot" to lilguy boss phase 1
+TODO add lilguy boss phase 2 and 3
 TODO add special boss door animation (fade out to black, fade in from black)
 TODO add hole to next floor after boss dies (circle fade in, circle fade out)
 TODO make first room on first floor always spawn as an item room

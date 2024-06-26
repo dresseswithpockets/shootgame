@@ -11,24 +11,26 @@ radius = 2.23607
 [node name="LinearBullet" type="Node2D"]
 script = ExtResource("1_5bkqs")
 
-[node name="SpriteNorth" type="Sprite2D" parent="."]
+[node name="AngularOrigin" type="Node2D" parent="."]
+
+[node name="SpriteNorth" type="Sprite2D" parent="AngularOrigin"]
 visible = false
 texture = ExtResource("2_mg4cq")
 region_rect = Rect2(1, 24, 5, 8)
 
-[node name="SpriteWest" type="Sprite2D" parent="."]
+[node name="SpriteWest" type="Sprite2D" parent="AngularOrigin"]
 visible = false
 texture = ExtResource("3_aae02")
 region_rect = Rect2(1, 24, 5, 8)
 
-[node name="SpriteNorthWest" type="Sprite2D" parent="."]
+[node name="SpriteNorthWest" type="Sprite2D" parent="AngularOrigin"]
 visible = false
 texture = ExtResource("4_sh47d")
 region_rect = Rect2(1, 24, 5, 8)
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="AngularOrigin"]
 collision_layer = 32
-collision_mask = 128
+collision_mask = 160
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AngularOrigin/Area2D"]
 shape = SubResource("CircleShape2D_41db3")

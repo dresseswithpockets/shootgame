@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://ce42g43uwtf1i"]
+
+[ext_resource type="PackedScene" uid="uid://dauw4d2sb8p72" path="res://enemies/enemy.tscn" id="1_nhqyn"]
+[ext_resource type="Texture2D" uid="uid://mf8fhgr46ena" path="res://enemies/boss_lilguy/boss_lilguy.png" id="2_3mxn0"]
+[ext_resource type="Script" path="res://state_machine/state_machine.gd" id="2_kst4c"]
+[ext_resource type="Script" path="res://enemies/boss_lilguy/boss_lilguy.gd" id="2_y3j7g"]
+[ext_resource type="Script" path="res://enemies/boss_lilguy/boss_lilguy_state_phase1.gd" id="3_iwti5"]
+
+[node name="BossLilguy" instance=ExtResource("1_nhqyn")]
+script = ExtResource("2_y3j7g")
+max_health = 200
+health = 200
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_3mxn0")
+
+[node name="PhaseStateMachine" type="Node" parent="." index="4"]
+script = ExtResource("2_kst4c")
+
+[node name="Phase1" type="Node" parent="PhaseStateMachine" index="0"]
+script = ExtResource("3_iwti5")
+
+[editable path="Repel"]

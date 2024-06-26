@@ -21,8 +21,8 @@ func _on_area_entered(area: Area2D) -> void:
     if is_queued_for_deletion():
         return
 
-    var area_parent: Node = area.get_parent()
-    if not "team" in area_parent or area_parent.team == team:
+    var area_parent: Node = area.owner
+    if "team" in area_parent and area_parent.team == team:
         return
     if "damage" in area_parent:
         area_parent.damage(touch_damage)

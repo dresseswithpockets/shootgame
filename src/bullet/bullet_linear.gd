@@ -1,10 +1,15 @@
 class_name BulletLinear extends Bullet
 
-@onready var sprite_north: Sprite2D = $SpriteNorth
-@onready var sprite_west: Sprite2D = $SpriteWest
-@onready var sprite_north_west: Sprite2D = $SpriteNorthWest
+@export var linear_speed: float = 80
+@export var angular_speed: float = 0
+@export var angular_radius: float = 0
+@export var angular_offset: float = 0
 
-@export var speed: float = 80
+@onready var sprite_north: Sprite2D = $AngularOrigin/SpriteNorth
+@onready var sprite_west: Sprite2D = $AngularOrigin/SpriteWest
+@onready var sprite_north_west: Sprite2D = $AngularOrigin/SpriteNorthWest
+@onready var angular_origin: Node2D = $AngularOrigin
+@onready var angular_rotation: float = angular_offset
 
 var direction: Vector2 = Vector2.UP
 
@@ -22,6 +27,7 @@ var direction: Vector2 = Vector2.UP
 ]
 
 func _ready() -> void:
+    area = $AngularOrigin/Area2D
     super._ready()
     
     var direction_angle := fmod(direction.angle(), TAU) / TAU
@@ -36,4 +42,7 @@ func _ready() -> void:
     sprite.flip_v = sprite_info[2]
 
 func _physics_process(delta: float) -> void:
-    position += direction * speed * delta
+    position += direction * linear_speed * delta
+    angular_rotation += angular_speed * delta
+    angular_origin.position.x = cos(angular_rotation) * angular_radius
+    angular_origin.position.y = sin(angular_rotation) * angular_radius
