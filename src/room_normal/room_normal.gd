@@ -28,6 +28,9 @@ var locked: bool = false:
         locked = p
         update_doors()
 
+# N.B. had to remove typing on these arrays because of a bug in Godot 4.3 beta
+#      arrays that are typed with non-builtin classes dont get encoded properly
+#      when debugging/viewing the node in remote
 @onready var _cell_tuples: Array = [
     DoorCellSet.new(north_pos, north_pos + Vector2i.RIGHT, 0),
     DoorCellSet.new(south_pos, south_pos + Vector2i.RIGHT, 4),
