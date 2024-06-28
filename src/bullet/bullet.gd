@@ -1,5 +1,7 @@
 class_name Bullet extends Node2D
 
+signal destroyed
+
 enum { TEAM_PLAYER, TEAM_ENEMY }
 
 @export var collision_area: Area2D
@@ -15,7 +17,7 @@ var _lifetime_timer: SceneTreeTimer
 func _ready() -> void:
     collision_area.area_entered.connect(_on_area_entered)
     _lifetime_timer = get_tree().create_timer(lifetime)
-    _lifetime_timer.timeout.connect(queue_free)
+    _lifetime_timer.timeout.connect(destroy)
 
 func _on_area_entered(area: Area2D) -> void:
     if is_queued_for_deletion():
@@ -31,4 +33,8 @@ func _on_area_entered(area: Area2D) -> void:
     
     # TODO: how should it work when the area is a bullet?
     if destroy_on_hit:
-        queue_free()
+        destroy()
+
+func destroy() -> void:
+    destroyed.emit()
+    queue_free()

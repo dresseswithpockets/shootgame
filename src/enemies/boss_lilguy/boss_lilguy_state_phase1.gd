@@ -72,35 +72,12 @@ func try_shoot(delta: float) -> void:
             spreadshot_fire_timer = spreadshot_fire_delay
             spreadshot_pending_count -= 1
 
-
-# TODO: maybe i should have a cluster "wrangler" which automatically sets
-#       angular_radius and angular_offset based on the number of bullets in the
-#       cluster? As it is now, this behaviour is not 1:1 - the bullets dont
-#       adjust radius or offset like multi shots do in the pico8 version
-func shoot_cluster(bullet_prefab: PackedScene, cluster_size: int, position: Vector2, direction: Vector2, linear_speed: float, team: int):
-    for cluster_idx in cluster_size:
-        var bullet: BulletLinear = bullet_prefab.instantiate()
-        bullet.global_position = position
-        bullet.linear_speed = linear_speed
-        bullet.team = team
-        bullet.angular_offset = TAU * cluster_idx / cluster_size
-        bullet.direction = direction
-        Global.game.add_bullet(bullet)
-
-func shoot_linear(bullet_prefab: PackedScene, position: Vector2, direction: Vector2, linear_speed: float, team: int):
-    var bullet: BulletLinear = bullet_prefab.instantiate()
-    bullet.global_position = position
-    bullet.linear_speed = linear_speed
-    bullet.team = team
-    bullet.direction = direction
-    Global.game.add_bullet(bullet)
-
 func shoot_spreadshot() -> void:
     var t := (float(spreadshot_pending_count) / float(spreadshot_count))
     var right_angle := lerp_angle(0, deg_to_rad(70), 1 - t)
     var left_angle := lerp_angle(deg_to_rad(110), PI, t)
-    shoot_linear(spreadshot_prefab, boss_lilguy.global_position, Vector2.from_angle(right_angle), spreadshot_linear_speed, Bullet.TEAM_ENEMY)
-    shoot_linear(spreadshot_prefab, boss_lilguy.global_position, Vector2.from_angle(left_angle), spreadshot_linear_speed, Bullet.TEAM_ENEMY)
+    Global.game.shoot_bullet_linear(spreadshot_prefab, boss_lilguy.global_position, Vector2.from_angle(right_angle), spreadshot_linear_speed, Bullet.TEAM_ENEMY)
+    Global.game.shoot_bullet_linear(spreadshot_prefab, boss_lilguy.global_position, Vector2.from_angle(left_angle), spreadshot_linear_speed, Bullet.TEAM_ENEMY)
 
 func shoot_baseshot() -> void:
     var direction := boss_lilguy.global_position.direction_to(Global.player.global_position)
@@ -110,4 +87,4 @@ func shoot_baseshot() -> void:
     for multishot_idx in multishot_count:
         direction = direction.rotated(bullet_arc_step)
         var position := boss_lilguy.global_position + direction * multishot_radius
-        shoot_cluster(multishot_prefab, multishot_cluster_size, position, direction, multishot_linear_speed, Bullet.TEAM_ENEMY)
+        Global.game.shoot_bullet_cluster(multishot_prefab, multishot_cluster_size, position, direction, multishot_linear_speed, Bullet.TEAM_ENEMY)
