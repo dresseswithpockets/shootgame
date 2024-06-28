@@ -2,7 +2,7 @@ class_name Bullet extends Node2D
 
 enum { TEAM_PLAYER, TEAM_ENEMY }
 
-@onready var area: Area2D = $Area2D
+@export var collision_area: Area2D
 
 @export_enum("Player", "Enemy") var team: int = TEAM_PLAYER
 
@@ -13,7 +13,7 @@ enum { TEAM_PLAYER, TEAM_ENEMY }
 var _lifetime_timer: SceneTreeTimer
 
 func _ready() -> void:
-    area.area_entered.connect(_on_area_entered)
+    collision_area.area_entered.connect(_on_area_entered)
     _lifetime_timer = get_tree().create_timer(lifetime)
     _lifetime_timer.timeout.connect(queue_free)
 

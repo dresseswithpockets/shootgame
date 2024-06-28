@@ -27,7 +27,6 @@ var direction: Vector2 = Vector2.UP
 ]
 
 func _ready() -> void:
-    area = $AngularOrigin/Area2D
     super._ready()
     
     var direction_angle := fmod(direction.angle(), TAU) / TAU

@@ -8,8 +8,9 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_41db3"]
 radius = 2.23607
 
-[node name="LinearBullet" type="Node2D"]
+[node name="LinearBullet" type="Node2D" node_paths=PackedStringArray("collision_area")]
 script = ExtResource("1_5bkqs")
+collision_area = NodePath("AngularOrigin/Area2D")
 
 [node name="AngularOrigin" type="Node2D" parent="."]
 

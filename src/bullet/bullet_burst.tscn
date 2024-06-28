@@ -6,8 +6,9 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_41db3"]
 radius = 2.23607
 
-[node name="BurstBullet" type="Node2D"]
+[node name="BurstBullet" type="Node2D" node_paths=PackedStringArray("collision_area")]
 script = ExtResource("1_di2vr")
+collision_area = NodePath("Area2D")
 lifetime = 1.0
 
 [node name="Sprite" type="Sprite2D" parent="."]
