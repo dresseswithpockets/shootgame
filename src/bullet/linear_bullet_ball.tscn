@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b6py6slv5jv58" path="res://bullet/bullet_ball.png" id="2_vhjsp"]
 
 [node name="LinearBullet" instance=ExtResource("1_g4js0")]
-angular_speed = 6.283
+tangent_speed = 6.283
 angular_radius = 2.5
 
 [node name="SpriteNorth" parent="AngularOrigin" index="0"]

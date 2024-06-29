@@ -40,7 +40,7 @@ func shoot_bullet_cluster(
     position: Vector2,
     direction: Vector2,
     linear_speed: float,
-    team: int,
+    team: int
 ) -> ClusterWrangler:
     var cluster_wrangler := ClusterWrangler.new()
     for cluster_idx in cluster_size:
@@ -56,12 +56,33 @@ func shoot_bullet_cluster(
     add_bullet(cluster_wrangler)
     return cluster_wrangler
 
+func shoot_bullet_angular(
+    bullet_prefab: PackedScene,
+    position: Vector2,
+    direction: Vector2,
+    linear_speed: float,
+    tangent_speed: float,
+    angular_radius_speed: float,
+    angular_offset: float,
+    team: int
+) -> BulletLinear:
+    var bullet: BulletLinear = bullet_prefab.instantiate()
+    bullet.global_position = position
+    bullet.direction = direction
+    bullet.linear_speed = linear_speed
+    bullet.tangent_speed = tangent_speed
+    bullet.angular_radius_speed = angular_radius_speed
+    bullet.angular_offset = angular_offset
+    bullet.team = team
+    add_bullet(bullet)
+    return bullet
+
 func shoot_bullet_linear(
     bullet_prefab: PackedScene,
     position: Vector2,
     direction: Vector2,
     linear_speed: float,
-    team: int,
+    team: int
 ) -> BulletLinear:
     var bullet: BulletLinear = bullet_prefab.instantiate()
     bullet.global_position = position

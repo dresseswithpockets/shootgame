@@ -8,6 +8,7 @@ enum { TEAM_PLAYER, TEAM_ENEMY }
 
 @export_enum("Player", "Enemy") var team: int = TEAM_PLAYER
 
+@export var destroy_on_dmg: bool = true
 @export var destroy_on_hit: bool = true
 @export var touch_damage: int = 1
 @export var lifetime: float = 32
@@ -32,7 +33,7 @@ func _on_area_entered(area: Area2D) -> void:
         area_parent.try_damage(touch_damage)
     
     # TODO: how should it work when the area is a bullet?
-    if destroy_on_hit:
+    if (destroy_on_hit and area_parent is not Bullet) or (destroy_on_dmg and area_parent is Bullet):
         destroy()
 
 func destroy() -> void:

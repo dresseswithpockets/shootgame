@@ -11,8 +11,8 @@
 size = Vector2(9, 13)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2lwoy"]
-radius = 4.5
-height = 13.0
+radius = 3.5
+height = 11.0
 
 [sub_resource type="Animation" id="Animation_ukvr3"]
 resource_name = "player_iframe_flash"
@@ -60,6 +60,7 @@ sfx_shoot = ExtResource("2_x2s71")
 sfx_damaged = ExtResource("3_dkc3b")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_xdswd")
 region_rect = Rect2(72, 0, 16, 16)
 

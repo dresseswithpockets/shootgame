@@ -1,8 +1,10 @@
 class_name BulletLinear extends Bullet
 
 @export var linear_speed: float = 80
-@export var angular_speed: float = 0
+@export var tangent_speed: float = 0
+@export var tangent_accel: float = 0
 @export var angular_radius: float = 0
+@export var angular_radius_speed: float = 0
 @export var angular_offset: float = 0
 
 @onready var sprite_north: Sprite2D = $AngularOrigin/SpriteNorth
@@ -42,6 +44,11 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
     position += direction * linear_speed * delta
-    angular_rotation += angular_speed * delta
-    angular_origin.position.x = cos(angular_rotation) * angular_radius
-    angular_origin.position.y = sin(angular_rotation) * angular_radius
+    angular_radius += angular_radius_speed * delta
+    tangent_speed += tangent_accel * delta
+    # linear velocity to angular velocity: w=v/r
+    if angular_radius > 0:
+        var angular_speed = tangent_speed / angular_radius
+        angular_rotation += angular_speed * delta
+        angular_origin.position.x = cos(angular_rotation) * angular_radius
+        angular_origin.position.y = sin(angular_rotation) * angular_radius
