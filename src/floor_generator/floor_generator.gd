@@ -14,6 +14,7 @@ signal floor_generated(rooms: Array[Array])
 
 @onready var room_normal_prefab: PackedScene = preload("res://room_normal/room_normal.tscn")
 @onready var room_boss_prefab: PackedScene = preload("res://room_boss/room_boss.tscn")
+@onready var boss_lilguy_prefab: PackedScene = preload("res://enemies/boss_lilguy/boss_lilguy.tscn")
 @onready var walker_prefab: PackedScene = preload("res://enemies/walker/walker.tscn")
 @onready var jumper_prefab: PackedScene = preload("res://enemies/jumper/jumper.tscn")
 @onready var burster_prefab: PackedScene = preload("res://enemies/burster/burster.tscn")
@@ -89,6 +90,8 @@ func generate_floor(floor_depth: int) -> void:
                 # add enemies to all rooms except for the boss room, item room, and center
                 if room.cell != FLOOR_CENTER and room.room_type == FloorRoom.NORMAL:
                     generate_enemies(room)
+            elif room is RoomBoss:
+                generate_boss(room)
     
     floor_generated.emit(rooms)
 
@@ -101,6 +104,13 @@ func _try_set_room_door(plan: FloorPlan, cell: Vector2i, room: RoomNormal, cardi
     if adjacent_room.room_type == FloorRoom.BOSS:
         door_type = RoomNormal.DOOR_BOSS
     room.set_door(cardinal, door_type)
+
+func generate_boss(room: Room) -> void:
+    # TODO: add more bosses!
+    var boss: Enemy = boss_lilguy_prefab.instantiate()
+    boss.position.x = 0
+    boss.position.y = -40
+    room.add_enemy(boss)
 
 var _enemy_gen_corners: Array[Vector2] = [
     Vector2(-46, -46),
