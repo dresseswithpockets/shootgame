@@ -117,7 +117,7 @@ func goto_room(cardinal: int) -> Vector2:
     room = floor_generator.rooms[room_idx.x][room_idx.y]
     
     room.enable()
-    if room.has_any_enemies():
+    if room.has_any_enemies() and room is RoomNormal:
         room.locked = true
     
     sfx_play_door_enter()
